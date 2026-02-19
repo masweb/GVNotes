@@ -1,0 +1,37 @@
+$primary-dark: coral; // Color para el tema dark
+$primary: #00b1ff; // Color para el tema light
+@import '@coreui/coreui/scss/coreui';
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+html {
+ -webkit-font-smoothing: antialiased;
+ -moz-osx-font-smoothing: grayscale;
+ text-rendering: optimizeLegibility;
+ -webkit-text-size-adjust: 100%;
+ -ms-text-size-adjust: 100%;
+}
+html,
+#app {
+ font-family: Inter;
+ font-size: 1em;
+}
+::-webkit-scrollbar {
+ width: 2px;
+ height: 2px;
+}
+
+[data-coreui-theme='dark'] {
+ --primary: #{$primary-dark}; // Usa interpolación de Sass para convertir $primary-dark a CSS
+
+ ::-webkit-scrollbar-track {
+  background: #aac3eb;
+ }
+
+ ::-webkit-scrollbar-thumb {
+  background: #2e3c50;
+ }
+
+ .card,
+ .modal-content {
+  box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.5);
+ }
+}

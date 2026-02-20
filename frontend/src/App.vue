@@ -1,5 +1,5 @@
 <script lang="ts" setup></script>
 
 <template>
- <div>hola</div>
+ <div><GVNotes /></div>
 </template>

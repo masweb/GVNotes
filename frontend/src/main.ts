@@ -4,6 +4,7 @@ import Coreui from '@coreui/vue'
 import { configure } from 'vee-validate'
 import App from './App.vue'
 import '@/css/main.scss'
+import 'splitpanes/dist/splitpanes.css'
 import './utils/coreui-dark-vue.js'
 
 // Validate only on blur/change, not on every keystroke

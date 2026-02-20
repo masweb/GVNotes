@@ -1,6 +1,7 @@
 $primary-dark: coral; // Color para el tema dark
 $primary: #00b1ff; // Color para el tema light
 @import '@coreui/coreui/scss/coreui';
+@import 'splitpanes-dark';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 html {
  -webkit-font-smoothing: antialiased;

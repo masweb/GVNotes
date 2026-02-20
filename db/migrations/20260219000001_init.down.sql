@@ -1,0 +1,1 @@
+-- No tables were created in this migration; nothing to drop.

@@ -78,6 +78,13 @@ Images: `SaveImage(noteID, mimeType, []byte)` `GetImage` `GetImagePath(filename)
 - Use CoreUI components (`CButton`, `CModal`, `CDropdown`…) only when they provide interactive logic
 - For purely structural/styling elements (`CCardBody`, `CFormInput`, `CRow`…) use plain Bootstrap HTML + classes directly
 
+## Seeder
+- Archivo: `seed.go` en la raíz (build tag `//go:build ignore`, no afecta al binario)
+- Embebe `db/migrations` para abrir la DB igual que la app
+- Genera: 21 notebooks raíz · 15 notas sueltas raíz · 1 notebook con 50 notas · 3 notebooks con sub-notebooks anidados
+- `go run seed.go` — añade datos (acumulativo)
+- `go run seed.go --reset` — limpia notebooks/notas y vuelve a poblar
+
 ## Rules
 - `sqlc generate` must be run from `db/` directory
 - Controllers never receive `*sql.DB`

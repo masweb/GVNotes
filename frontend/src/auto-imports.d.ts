@@ -93,6 +93,7 @@ declare global {
   const useIsSubmitting: typeof import('vee-validate').useIsSubmitting
   const useLink: typeof import('vue-router').useLink
   const useModel: typeof import('vue').useModel
+  const useNavigationStore: typeof import('./stores/navigation').useNavigationStore
   const useResetForm: typeof import('vee-validate').useResetForm
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
@@ -114,4 +115,7 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { NavItem, NavLevel } from './stores/navigation'
+  import('./stores/navigation')
 }

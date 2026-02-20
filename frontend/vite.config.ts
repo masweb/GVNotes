@@ -14,7 +14,7 @@ export default defineConfig({
    dts: 'src/auto-imports.d.ts',
    imports: ['vue', 'pinia', 'vue-router', 'vue-i18n', 'vee-validate'],
    include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
-   dirs: ['src/composables/**', 'src/plugins/**', 'src/services/**', 'src/utils/**', 'src/types/**', 'src/stores/**']
+   dirs: ['src/composables', 'src/plugins', 'src/services', 'src/utils', 'src/types', 'src/stores']
   }) as Plugin,
   Components({
    dirs: ['src/services/**', 'src/components/**', 'src/views/**']

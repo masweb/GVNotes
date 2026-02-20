@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AuthView: typeof import('./src/views/AuthView.vue')['default']
     GVNotes: typeof import('./src/views/GVNotes.vue')['default']
+    NavPanel: typeof import('./src/components/NavPanel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

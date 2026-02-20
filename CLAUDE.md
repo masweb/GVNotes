@@ -60,6 +60,24 @@ Notes: `ListNotes(notebookID)` `GetNote` `CreateNote` `UpdateNoteTitle` `UpdateN
 Images: `SaveImage(noteID, mimeType, []byte)` `GetImage` `GetImagePath(filename)` `ListImagesByNote` `DeleteImage`
 — `ListNotebooks("")` / `ListNotes("")` → root level (converts empty string to nil)
 
+## Frontend conventions
+
+### General
+- All TypeScript/JavaScript functions must be written as arrow functions
+- `vee-validate` is auto-imported — use `useForm` + `useField` for all forms; define validation rules in `src/composables/useValidation.ts`
+- vee-validate: the global `configure()` in `main.ts` does NOT reliably suppress eager validation — always pass options explicitly per form/field:
+  - `useForm({ validateOnMount: false, validateOnModelUpdate: false, validateOnBlur: false })`
+  - `useField('name', rule, { validateOnValueUpdate: false })`
+  - This makes validation trigger only on submit (`handleSubmit`), which is the desired UX
+- When adding new generic directories under `src/`, register them in `vite.config.ts`: `AutoImport.dirs` for composables/utils/stores/services/types/plugins, `Components.dirs` for components/views
+- Vue SFC tag order: `<script lang="ts" setup>` first, then `<template>` — never use `<style>` in components
+- All SCSS goes in `src/css/`
+- No vue-router — use `<component :is="xxx">` for view switching
+
+### CoreUI + Bootstrap
+- Use CoreUI components (`CButton`, `CModal`, `CDropdown`…) only when they provide interactive logic
+- For purely structural/styling elements (`CCardBody`, `CFormInput`, `CRow`…) use plain Bootstrap HTML + classes directly
+
 ## Rules
 - `sqlc generate` must be run from `db/` directory
 - Controllers never receive `*sql.DB`

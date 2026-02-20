@@ -13,14 +13,37 @@ const emit = defineEmits<{
   noteClick: [item: NavItem & { kind: 'note' }]
 }>()
 
-const notebooks = computed(() => props.level.items.filter(i => i.kind === 'notebook') as (NavItem & { kind: 'notebook' })[])
-const notes = computed(() => props.level.items.filter(i => i.kind === 'note') as (NavItem & { kind: 'note' })[])
+const searchQuery = ref('')
+
+watch(() => props.level, () => { searchQuery.value = '' })
+
+const notebooks = computed(() =>
+  props.level.items
+    .filter(i => i.kind === 'notebook')
+    .filter(i => i.data.title.toLowerCase().includes(searchQuery.value.toLowerCase())) as (NavItem & { kind: 'notebook' })[]
+)
+
+const notes = computed(() =>
+  props.level.items
+    .filter(i => i.kind === 'note')
+    .filter(i => i.data.title.toLowerCase().includes(searchQuery.value.toLowerCase())) as (NavItem & { kind: 'note' })[]
+)
+
+const noResults = computed(() => searchQuery.value !== '' && notebooks.value.length === 0 && notes.value.length === 0)
 </script>
 
 <template>
   <div class="nav-panel h-100 d-flex flex-column overflow-hidden">
-    <div class="nav-panel__title px-3 py-2 fw-semibold text-truncate border-bottom">
+    <div class="nav-panel__title px-3 py-2 fw-semibold text-truncate border-bottom flex-shrink-0">
       {{ level.title }}
+    </div>
+    <div class="px-2 py-2 border-bottom flex-shrink-0">
+      <input
+        v-model="searchQuery"
+        type="search"
+        class="form-control form-control-sm"
+        placeholder="Buscar..."
+      />
     </div>
     <ul class="list-group list-group-flush overflow-y-auto flex-grow-1">
       <li
@@ -47,6 +70,9 @@ const notes = computed(() => props.level.items.filter(i => i.kind === 'note') as
       </li>
       <li v-if="level.items.length === 0" class="list-group-item text-secondary small px-3 py-2">
         Vacío
+      </li>
+      <li v-else-if="noResults" class="list-group-item text-secondary small px-3 py-2">
+        Sin resultados
       </li>
     </ul>
   </div>

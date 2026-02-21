@@ -1,13 +1,13 @@
 {
-  "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "gvnotes",
-  "outputfilename": "gvnotes",
-  "frontend:install": "pnpm install",
-  "frontend:build": "pnpm run build",
-  "frontend:dev:watcher": "pnpm run dev",
-  "frontend:dev:serverUrl": "auto",
-  "author": {
-    "name": "",
-    "email": ""
-  }
+ "$schema": "https://wails.io/schemas/config.v2.json",
+ "name": "GVNotes",
+ "outputfilename": "GVNotes",
+ "frontend:install": "pnpm install",
+ "frontend:build": "pnpm run build",
+ "frontend:dev:watcher": "pnpm run dev",
+ "frontend:dev:serverUrl": "auto",
+ "author": {
+  "name": "Guillermo Valentín",
+  "email": "masweb@me.com"
+ }
 }

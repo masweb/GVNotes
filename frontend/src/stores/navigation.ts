@@ -1,4 +1,4 @@
-import { ListNotebooks, ListNotes } from '../../wailsjs/go/main/App'
+import { ListNotebooks, ListNotes, UpdateNotebookPosition, UpdateNotePosition } from '../../wailsjs/go/main/App'
 import type { dto } from '../../wailsjs/go/models'
 
 export type NavItem =
@@ -19,7 +19,7 @@ export const useNavigationStore = defineStore('navigation', () => {
   const leftPanel = computed(() => (stack.value.length > 1 ? stack.value[stack.value.length - 2] : stack.value[0] ?? null))
   const rightPanel = computed(() => (stack.value.length > 1 ? stack.value[stack.value.length - 1] : null))
   const canGoBack = computed(() => stack.value.length > 1)
-  const activeNotebookId = computed(() => (stack.value.length > 1 ? stack.value[stack.value.length - 1].parentId : null))
+  const activeNotebookId = computed(() => (stack.value.length > 1 ? stack.value[stack.value.length - 1]?.parentId ?? null : null))
 
   const loadLevel = async (parentId: string | null, title: string): Promise<NavLevel> => {
     const id = parentId ?? ''
@@ -76,5 +76,25 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
   }
 
-  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack }
+  const reorderItems = async (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]) => {
+    // Buscar el nivel en el stack por parentId para mutar el objeto reactivo directamente
+    const target = stack.value.find(l => l.parentId === level.parentId)
+    if (target) {
+      const otherKind = target.items.filter(i => i.kind !== kind)
+      target.items = kind === 'notebook'
+        ? [...newItems, ...otherKind]
+        : [...otherKind, ...newItems]
+    }
+    // Persistir en backend
+    await Promise.all(
+      newItems.map((item, idx) =>
+        kind === 'notebook'
+          ? UpdateNotebookPosition(item.data.id, { position: idx * 1000 })
+          : UpdateNotePosition(item.data.id, { position: idx * 1000 }),
+      ),
+    )
+    newItems.forEach((item, idx) => { item.data.position = idx * 1000 })
+  }
+
+  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems }
 })

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Splitpanes, Pane } from 'splitpanes'
 import { IconArrowLeft } from '@tabler/icons-vue'
-import type { NavItem } from '@/stores/navigation'
+import type { NavItem, NavLevel } from '@/stores/navigation'
 
 const nav = useNavigationStore()
 
@@ -17,6 +17,10 @@ const onNotebookClickRight = (item: NavItem & { kind: 'notebook' }) => {
 
 const onNoteClick = (item: NavItem & { kind: 'note' }) => {
   nav.selectNote(item.data.id)
+}
+
+const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]) => {
+  nav.reorderItems(level, kind, newItems)
 }
 </script>
 
@@ -39,11 +43,13 @@ const onNoteClick = (item: NavItem & { kind: 'note' }) => {
       <template v-if="!nav.rightPanel">
         <NavPanel
           v-if="nav.leftPanel"
+          :key="nav.leftPanel.parentId ?? 'root'"
           class="flex-grow-1"
           :level="nav.leftPanel"
           :active-note-id="nav.selectedNoteId"
           @notebook-click="onNotebookClickRight"
           @note-click="onNoteClick"
+          @reorder="onReorder"
         />
       </template>
 
@@ -52,18 +58,20 @@ const onNoteClick = (item: NavItem & { kind: 'note' }) => {
         <pane :min-size="20" :max-size="80">
           <NavPanel
             :level="nav.leftPanel!"
-            :active-note-id="null"
+                        :active-note-id="null"
             :active-notebook-id="nav.activeNotebookId"
             @notebook-click="onNotebookClickLeft"
             @note-click="onNoteClick"
+            @reorder="onReorder"
           />
         </pane>
         <pane :min-size="20" :max-size="80">
           <NavPanel
             :level="nav.rightPanel"
-            :active-note-id="nav.selectedNoteId"
+                        :active-note-id="nav.selectedNoteId"
             @notebook-click="onNotebookClickRight"
             @note-click="onNoteClick"
+            @reorder="onReorder"
           />
         </pane>
       </splitpanes>

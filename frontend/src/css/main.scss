@@ -20,6 +20,28 @@ html,
  height: 2px;
 }
 
+.nav-panel {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+.nav-draggable-item {
+  cursor: pointer;
+
+  .drag-handle-icon {
+    cursor: grab;
+  }
+}
+
+.drag-ghost {
+  opacity: 0.4;
+}
+
+.drag-fallback {
+  opacity: 0.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
 [data-coreui-theme='dark'] {
  --primary: #{$primary-dark}; // Usa interpolación de Sass para convertir $primary-dark a CSS
 

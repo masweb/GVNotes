@@ -26,7 +26,7 @@ html,
 }
 
 .nav-draggable-item {
-  cursor: pointer;
+  cursor: default;
 
   .drag-handle-icon {
     cursor: grab;

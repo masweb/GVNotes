@@ -96,5 +96,18 @@ export const useNavigationStore = defineStore('navigation', () => {
     newItems.forEach((item, idx) => { item.data.position = idx * 1000 })
   }
 
-  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems }
+  const removeItem = (levelParentId: string | null, itemId: string, itemKind: 'notebook' | 'note') => {
+    const target = stack.value.find(l => l.parentId === levelParentId)
+    if (target) {
+      target.items = target.items.filter(i => i.data.id !== itemId)
+    }
+    if (itemKind === 'notebook') {
+      const stackIdx = stack.value.findIndex(l => l.parentId === itemId)
+      if (stackIdx !== -1) {
+        stack.value = stack.value.slice(0, stackIdx)
+      }
+    }
+  }
+
+  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems, removeItem }
 })

@@ -33,6 +33,30 @@ const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
   modalKind.value = kind
   modalVisible.value = true
 }
+
+// Modal de borrado
+const { deleteItem } = useNavActions()
+const deleteModalVisible = ref(false)
+const deleteLevel = ref<NavLevel | null>(null)
+const deleteTarget = ref<NavItem | null>(null)
+
+const onDelete = (level: NavLevel, item: NavItem) => {
+  deleteLevel.value = level
+  deleteTarget.value = item
+  nextTick(() => { deleteModalVisible.value = true })
+}
+
+const onDeleteClose = () => {
+  deleteModalVisible.value = false
+  deleteTarget.value = null
+  deleteLevel.value = null
+}
+
+const onDeleteConfirm = async () => {
+  if (!deleteLevel.value || !deleteTarget.value) return
+  await deleteItem(deleteLevel.value, deleteTarget.value)
+  onDeleteClose()
+}
 </script>
 
 <template>
@@ -62,6 +86,7 @@ const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
           @note-click="onNoteClick"
           @reorder="onReorder"
           @create="onCreate(nav.leftPanel, $event)"
+          @delete="onDelete(nav.leftPanel, $event)"
         />
       </template>
 
@@ -76,6 +101,7 @@ const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
             @note-click="onNoteClick"
             @reorder="onReorder"
             @create="onCreate(nav.leftPanel!, $event)"
+            @delete="onDelete(nav.leftPanel!, $event)"
           />
         </pane>
         <pane :min-size="20" :max-size="80">
@@ -86,6 +112,7 @@ const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
             @note-click="onNoteClick"
             @reorder="onReorder"
             @create="onCreate(nav.rightPanel!, $event)"
+            @delete="onDelete(nav.rightPanel!, $event)"
           />
         </pane>
       </splitpanes>
@@ -104,6 +131,15 @@ const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
     v-model:visible="modalVisible"
     :kind="modalKind"
     :level="modalLevel"
+  />
+
+  <DeleteConfirmModal
+    v-if="deleteTarget"
+    :visible="deleteModalVisible"
+    :kind="deleteTarget.kind"
+    :title="deleteTarget.data.title"
+    @confirm="onDeleteConfirm"
+    @update:visible="onDeleteClose"
   />
 </template>
 

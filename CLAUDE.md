@@ -86,6 +86,11 @@ Images: `SaveImage(noteID, mimeType, []byte)` `GetImage` `GetImagePath(filename)
 - `go run seed.go` — añade datos (acumulativo)
 - `go run seed.go --reset` — limpia notebooks/notas y vuelve a poblar
 
+## Git commits
+- Title in English, imperative, conventional commits format: `feat:`, `fix:`, `refactor:`, etc.
+- Short body (2-4 lines) describing what and why, in English
+- Always add: `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`
+
 ## Rules
 - `sqlc generate` must be run from `db/` directory
 - Controllers never receive `*sql.DB`

@@ -64,12 +64,22 @@ func (s *noteService) Create(ctx context.Context, req dto.CreateNoteRequest) (dt
 	if req.Title == "" {
 		return dto.NoteDetail{}, fmt.Errorf("%w: title cannot be empty", apperrors.ErrInvalidInput)
 	}
+	existing, err := s.q.ListNotes(ctx, req.NotebookID)
+	if err != nil {
+		return dto.NoteDetail{}, err
+	}
+	var maxPos int64
+	for _, e := range existing {
+		if e.Position > maxPos {
+			maxPos = e.Position
+		}
+	}
 	n, err := s.q.CreateNote(ctx, db.CreateNoteParams{
 		ID:         uuid.NewString(),
 		NotebookID: req.NotebookID,
 		Title:      req.Title,
 		Content:    "{}",
-		Position:   0,
+		Position:   maxPos + 1000,
 	})
 	if err != nil {
 		return dto.NoteDetail{}, err

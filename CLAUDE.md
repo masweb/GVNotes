@@ -2,6 +2,7 @@
 
 ## Communication
 Always respond to the user **in Spanish (Castilian)**.
+Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
 
 ---
 
@@ -66,7 +67,7 @@ Images: `SaveImage(noteID, mimeType, []byte)` `GetImage` `GetImagePath(filename)
 - All TypeScript/JavaScript functions must be written as arrow functions
 - `vee-validate` is auto-imported — use `useForm` + `useField` for all forms; define validation rules in `src/composables/useValidation.ts`
 - vee-validate: the global `configure()` in `main.ts` does NOT reliably suppress eager validation — always pass options explicitly per form/field:
-  - `useForm({ validateOnMount: false, validateOnModelUpdate: false, validateOnBlur: false })`
+  - `useForm({ validateOnMount: false })` — `validateOnModelUpdate` does NOT exist in vee-validate v4, omit it
   - `useField('name', rule, { validateOnValueUpdate: false })`
   - This makes validation trigger only on submit (`handleSubmit`), which is the desired UX
 - When adding new generic directories under `src/`, register them in `vite.config.ts`: `AutoImport.dirs` for composables/utils/stores/services/types/plugins, `Components.dirs` for components/views

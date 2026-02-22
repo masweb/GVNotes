@@ -13,6 +13,7 @@ const emit = defineEmits<{
   notebookClick: [item: NavItem & { kind: 'notebook' }]
   noteClick: [item: NavItem & { kind: 'note' }]
   reorder: [level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]]
+  create: [kind: 'notebook' | 'note']
 }>()
 
 const searchQuery = ref('')
@@ -85,9 +86,7 @@ watch(isSearching, (v) => {
 
 <template>
   <div class="nav-panel h-100 d-flex flex-column overflow-hidden">
-    <div class="nav-panel__title px-3 py-2 fw-semibold text-truncate border-bottom flex-shrink-0">
-      {{ level.title }}
-    </div>
+    <NavPanelHeader :level="level" @create="emit('create', $event)" />
     <div class="px-2 py-2 border-bottom flex-shrink-0">
       <input
         v-model="searchQuery"

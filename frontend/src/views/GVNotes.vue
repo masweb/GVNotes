@@ -22,6 +22,17 @@ const onNoteClick = (item: NavItem & { kind: 'note' }) => {
 const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]) => {
   nav.reorderItems(level, kind, newItems)
 }
+
+// Modal de alta
+const modalVisible = ref(false)
+const modalKind = ref<'notebook' | 'note'>('notebook')
+const modalLevel = ref<NavLevel | null>(null)
+
+const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
+  modalLevel.value = level
+  modalKind.value = kind
+  modalVisible.value = true
+}
 </script>
 
 <template>
@@ -50,6 +61,7 @@ const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem
           @notebook-click="onNotebookClickRight"
           @note-click="onNoteClick"
           @reorder="onReorder"
+          @create="onCreate(nav.leftPanel, $event)"
         />
       </template>
 
@@ -58,20 +70,22 @@ const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem
         <pane :min-size="20" :max-size="80">
           <NavPanel
             :level="nav.leftPanel!"
-                        :active-note-id="null"
+            :active-note-id="null"
             :active-notebook-id="nav.activeNotebookId"
             @notebook-click="onNotebookClickLeft"
             @note-click="onNoteClick"
             @reorder="onReorder"
+            @create="onCreate(nav.leftPanel!, $event)"
           />
         </pane>
         <pane :min-size="20" :max-size="80">
           <NavPanel
             :level="nav.rightPanel"
-                        :active-note-id="nav.selectedNoteId"
+            :active-note-id="nav.selectedNoteId"
             @notebook-click="onNotebookClickRight"
             @note-click="onNoteClick"
             @reorder="onReorder"
+            @create="onCreate(nav.rightPanel!, $event)"
           />
         </pane>
       </splitpanes>
@@ -85,5 +99,11 @@ const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem
       </div>
     </pane>
   </splitpanes>
+
+  <CreateItemModal
+    v-model:visible="modalVisible"
+    :kind="modalKind"
+    :level="modalLevel"
+  />
 </template>
 

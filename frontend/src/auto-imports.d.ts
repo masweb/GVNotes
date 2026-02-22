@@ -93,6 +93,7 @@ declare global {
   const useIsSubmitting: typeof import('vee-validate').useIsSubmitting
   const useLink: typeof import('vue-router').useLink
   const useModel: typeof import('vue').useModel
+  const useNavActions: typeof import('./composables/useNavActions').useNavActions
   const useNavigationStore: typeof import('./stores/navigation').useNavigationStore
   const useResetForm: typeof import('vee-validate').useResetForm
   const useRoute: typeof import('vue-router').useRoute

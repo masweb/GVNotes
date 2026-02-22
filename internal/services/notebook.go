@@ -64,13 +64,21 @@ func (s *notebookService) Create(ctx context.Context, req dto.CreateNotebookRequ
 		return dto.NotebookDetail{}, fmt.Errorf("%w: title cannot be empty", apperrors.ErrInvalidInput)
 	}
 
-	// Place new notebook at the end by default (position 0 will be sorted by creation order
-	// until the user reorders via drag & drop).
+	existing, err := s.q.ListNotebooks(ctx, req.ParentID)
+	if err != nil {
+		return dto.NotebookDetail{}, err
+	}
+	var maxPos int64
+	for _, nb := range existing {
+		if nb.Position > maxPos {
+			maxPos = nb.Position
+		}
+	}
 	n, err := s.q.CreateNotebook(ctx, db.CreateNotebookParams{
 		ID:       uuid.NewString(),
 		ParentID: req.ParentID,
 		Title:    req.Title,
-		Position: 0,
+		Position: maxPos + 1000,
 	})
 	if err != nil {
 		return dto.NotebookDetail{}, err

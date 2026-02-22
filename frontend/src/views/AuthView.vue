@@ -35,6 +35,9 @@ const submitSet = handleSet(async () => {
 const submitVerify = handleVerify(async () => {
  await auth.verifyPassword(password.value)
 })
+
+const firstInput = ref<HTMLInputElement | null>(null)
+onMounted(() => firstInput.value?.focus())
 </script>
 
 <template>
@@ -50,6 +53,7 @@ const submitVerify = handleVerify(async () => {
      <div class="mb-3">
       <label class="form-label">Contraseña</label>
       <input
+       ref="firstInput"
        v-model="newPassword"
        type="password"
        class="form-control"
@@ -86,6 +90,7 @@ const submitVerify = handleVerify(async () => {
      <div class="mb-4">
       <label class="form-label">Contraseña</label>
       <input
+       ref="firstInput"
        v-model="password"
        type="password"
        class="form-control"

@@ -15,6 +15,7 @@ const emit = defineEmits<{
  reorder: [level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]]
  create: [kind: 'notebook' | 'note']
  delete: [item: NavItem]
+ rename: [level: NavLevel, newTitle: string]
 }>()
 
 const searchQuery = ref('')
@@ -107,7 +108,7 @@ watch(isSearching, v => {
 
 <template>
  <div class="nav-panel h-100 d-flex flex-column overflow-hidden">
-  <NavPanelHeader :level="level" @create="emit('create', $event)" />
+  <NavPanelHeader :level="level" @create="emit('create', $event)" @rename="emit('rename', level, $event)" />
   <div class="px-2 py-2 border-bottom flex-shrink-0">
    <input v-model="searchQuery" type="search" class="form-control form-control-sm" placeholder="Buscar..." />
   </div>

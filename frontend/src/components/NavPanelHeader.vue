@@ -2,14 +2,16 @@
 import { IconPlus, IconNote, IconNotebook } from '@tabler/icons-vue'
 import type { NavLevel } from '@/stores/navigation'
 
-defineProps<{
+const props = defineProps<{
   level: NavLevel
 }>()
 
 const emit = defineEmits<{
   create: [kind: 'notebook' | 'note']
+  rename: [newTitle: string]
 }>()
 
+// Dropdown crear
 const open = ref(false)
 const btnEl = useTemplateRef<HTMLElement>('btnEl')
 const menuStyle = ref<Record<string, string>>({})
@@ -39,12 +41,53 @@ const onDocClick = (e: MouseEvent) => {
 
 onMounted(() => document.addEventListener('click', onDocClick))
 onUnmounted(() => document.removeEventListener('click', onDocClick))
+
+// Renombrar título
+const editingTitle = ref(false)
+const titleInput = ref<HTMLInputElement | null>(null)
+const { handleSubmit, resetForm } = useForm({ validateOnMount: false })
+const { value: titleValue, errorMessage: titleError } = useField<string>('title', 'required', { validateOnValueUpdate: false })
+
+const startEdit = () => {
+  if (!props.level.parentId) return
+  titleValue.value = props.level.title
+  editingTitle.value = true
+  nextTick(() => titleInput.value?.select())
+}
+
+const cancel = () => {
+  editingTitle.value = false
+  resetForm()
+}
+
+const submit = handleSubmit(async (values) => {
+  if (values.title === props.level.title) { cancel(); return }
+  emit('rename', values.title)
+  cancel()
+})
 </script>
 
 <template>
-  <div class="nav-panel__title px-3 py-2 border-bottom flex-shrink-0 d-flex align-items-center justify-content-between">
-    <span class="fw-semibold text-truncate">{{ level.title }}</span>
-    <div class="dropdown-wrapper">
+  <div class="nav-panel__title px-3 py-2 border-bottom flex-shrink-0 d-flex align-items-center justify-content-between gap-2">
+    <form v-if="editingTitle" class="flex-grow-1 me-1" @submit.prevent="submit" @keydown.esc="cancel">
+      <input
+        ref="titleInput"
+        v-model="titleValue"
+        type="text"
+        class="form-control form-control-sm fw-semibold border-0 border-bottom rounded-0 px-0"
+        :class="{ 'is-invalid': titleError }"
+        @blur="submit"
+      />
+    </form>
+    <span
+      v-else
+      class="fw-semibold text-truncate flex-grow-1"
+      :class="{ 'cursor-pointer': !!level.parentId }"
+      :title="level.parentId ? 'Click para renombrar' : undefined"
+      @click="startEdit"
+    >{{ level.title }}</span>
+
+    <div class="dropdown-wrapper flex-shrink-0">
       <button
         ref="btnEl"
         class="btn btn-sm p-1 d-flex align-items-center"

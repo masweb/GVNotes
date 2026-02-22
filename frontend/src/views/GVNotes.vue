@@ -66,6 +66,11 @@ const onDeleteConfirm = async () => {
  await deleteItem(deleteLevel.value, deleteTarget.value)
  onDeleteClose()
 }
+
+const onRename = (level: NavLevel, newTitle: string) => {
+ if (!level.parentId) return
+ nav.renameNotebook(level.parentId, newTitle)
+}
 </script>
 
 <template>
@@ -73,7 +78,10 @@ const onDeleteConfirm = async () => {
   <!-- Paneles laterales -->
   <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column">
    <!-- Barra de navegación -->
-   <div class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1">
+   <div
+    class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1"
+    style="height: 42px"
+   >
     <button class="btn btn-sm d-flex align-items-center p-1" :disabled="!nav.canGoBack" @click="nav.goBack()">
      <IconArrowLeft :size="22" stroke-width="1" />
     </button>
@@ -101,6 +109,7 @@ const onDeleteConfirm = async () => {
      @reorder="onReorder"
      @create="onCreate(nav.leftPanel, $event)"
      @delete="onDelete(nav.leftPanel, $event)"
+     @rename="onRename"
     />
    </template>
 
@@ -116,6 +125,7 @@ const onDeleteConfirm = async () => {
       @reorder="onReorder"
       @create="onCreate(nav.leftPanel!, $event)"
       @delete="onDelete(nav.leftPanel!, $event)"
+      @rename="onRename"
      />
     </pane>
     <pane :min-size="20" :max-size="80">
@@ -127,6 +137,7 @@ const onDeleteConfirm = async () => {
       @reorder="onReorder"
       @create="onCreate(nav.rightPanel!, $event)"
       @delete="onDelete(nav.rightPanel!, $event)"
+      @rename="onRename"
      />
     </pane>
    </splitpanes>
@@ -134,10 +145,15 @@ const onDeleteConfirm = async () => {
 
   <!-- Contenido principal -->
   <pane :min-size="40">
-   <div class="h-100 p-4 overflow-auto">
-    <p v-if="!nav.selectedNoteId" class="text-secondary">Selecciona una nota</p>
-    <p v-else class="text-secondary font-monospace small">note: {{ nav.selectedNoteId }}</p>
+   <div class="h-100 d-flex align-items-center justify-content-center" v-if="!nav.selectedNoteId">
+    <p class="text-secondary mb-0">Selecciona una nota</p>
    </div>
+   <NoteEditor
+    v-else
+    :key="nav.selectedNoteId"
+    :note-id="nav.selectedNoteId"
+    @title-changed="(id, title) => nav.renameItem(id, 'note', title)"
+   />
   </pane>
  </splitpanes>
 

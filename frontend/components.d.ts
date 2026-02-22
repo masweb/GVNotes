@@ -17,6 +17,7 @@ declare module 'vue' {
     GVNotes: typeof import('./src/views/GVNotes.vue')['default']
     NavPanel: typeof import('./src/components/NavPanel.vue')['default']
     NavPanelHeader: typeof import('./src/components/NavPanelHeader.vue')['default']
+    NoteEditor: typeof import('./src/components/NoteEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

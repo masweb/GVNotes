@@ -152,7 +152,7 @@ const onRename = (level: NavLevel, newTitle: string) => {
     v-else
     :key="nav.selectedNoteId"
     :note-id="nav.selectedNoteId"
-    @title-changed="(id, title) => nav.renameItem(id, 'note', title)"
+    @title-changed="(id: string, title: string) => nav.renameItem(id, 'note', title)"
    />
   </pane>
  </splitpanes>

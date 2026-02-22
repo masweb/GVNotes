@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconPlus } from '@tabler/icons-vue'
+import { IconPlus, IconNote, IconNotebook } from '@tabler/icons-vue'
 import type { NavLevel } from '@/stores/navigation'
 
 defineProps<{
@@ -54,8 +54,8 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
         <IconPlus :size="16" />
       </button>
       <ul class="dropdown-menu" :class="{ show: open }" :style="menuStyle">
-        <li><button class="dropdown-item" type="button" @click="select('note')">Nueva nota</button></li>
-        <li><button class="dropdown-item" type="button" @click="select('notebook')">Nueva libreta</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('note')"><IconNote :size="22" stroke-width="1" />Nueva nota</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('notebook')"><IconNotebook :size="22" stroke-width="1" />Nueva libreta</button></li>
       </ul>
     </div>
   </div>

@@ -8,26 +8,26 @@ const auth = useAuthStore()
 const { currentTheme, toggleTheme } = useTheme()
 
 const logout = () => {
-  nav.reset()
-  auth.logout()
+ nav.reset()
+ auth.logout()
 }
 
 onMounted(() => nav.init())
 
 const onNotebookClickLeft = (item: NavItem & { kind: 'notebook' }) => {
-  nav.openNotebookFromLeft(item.data)
+ nav.openNotebookFromLeft(item.data)
 }
 
 const onNotebookClickRight = (item: NavItem & { kind: 'notebook' }) => {
-  nav.openNotebook(item.data)
+ nav.openNotebook(item.data)
 }
 
 const onNoteClick = (item: NavItem & { kind: 'note' }) => {
-  nav.selectNote(item.data.id)
+ nav.selectNote(item.data.id)
 }
 
 const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]) => {
-  nav.reorderItems(level, kind, newItems)
+ nav.reorderItems(level, kind, newItems)
 }
 
 // Modal de alta
@@ -36,9 +36,9 @@ const modalKind = ref<'notebook' | 'note'>('notebook')
 const modalLevel = ref<NavLevel | null>(null)
 
 const onCreate = (level: NavLevel, kind: 'notebook' | 'note') => {
-  modalLevel.value = level
-  modalKind.value = kind
-  modalVisible.value = true
+ modalLevel.value = level
+ modalKind.value = kind
+ modalVisible.value = true
 }
 
 // Modal de borrado
@@ -48,114 +48,107 @@ const deleteLevel = ref<NavLevel | null>(null)
 const deleteTarget = ref<NavItem | null>(null)
 
 const onDelete = (level: NavLevel, item: NavItem) => {
-  deleteLevel.value = level
-  deleteTarget.value = item
-  nextTick(() => { deleteModalVisible.value = true })
+ deleteLevel.value = level
+ deleteTarget.value = item
+ nextTick(() => {
+  deleteModalVisible.value = true
+ })
 }
 
 const onDeleteClose = () => {
-  deleteModalVisible.value = false
-  deleteTarget.value = null
-  deleteLevel.value = null
+ deleteModalVisible.value = false
+ deleteTarget.value = null
+ deleteLevel.value = null
 }
 
 const onDeleteConfirm = async () => {
-  if (!deleteLevel.value || !deleteTarget.value) return
-  await deleteItem(deleteLevel.value, deleteTarget.value)
-  onDeleteClose()
+ if (!deleteLevel.value || !deleteTarget.value) return
+ await deleteItem(deleteLevel.value, deleteTarget.value)
+ onDeleteClose()
 }
 </script>
 
 <template>
-  <splitpanes style="height: 100vh" :class="currentTheme === 'dark' ? 'split-dark' : 'default-theme'">
-    <!-- Paneles laterales -->
-    <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column">
-      <!-- Barra de navegación -->
-      <div class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1">
-        <button
-          class="btn btn-sm d-flex align-items-center p-1"
-          :disabled="!nav.canGoBack"
-          @click="nav.goBack()"
-        >
-          <IconArrowLeft :size="18" />
-        </button>
-        <div class="ms-auto d-flex align-items-center gap-1">
-          <button class="btn btn-sm d-flex align-items-center p-1" @click="toggleTheme">
-            <IconSun v-if="currentTheme === 'dark'" :size="18" />
-            <IconMoon v-else :size="18" />
-          </button>
-          <button class="btn btn-sm d-flex align-items-center p-1 text-danger" @click="logout">
-            <IconPower :size="18" />
-          </button>
-        </div>
-      </div>
+ <splitpanes style="height: 100vh" :class="currentTheme === 'dark' ? 'split-dark' : 'default-theme'">
+  <!-- Paneles laterales -->
+  <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column">
+   <!-- Barra de navegación -->
+   <div class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1">
+    <button class="btn btn-sm d-flex align-items-center p-1" :disabled="!nav.canGoBack" @click="nav.goBack()">
+     <IconArrowLeft :size="22" stroke-width="1" />
+    </button>
+    <div class="ms-auto d-flex align-items-center gap-1">
+     <button class="btn btn-sm d-flex align-items-center p-1" @click="toggleTheme">
+      <IconSun v-if="currentTheme === 'dark'" :size="22" stroke-width="1" />
+      <IconMoon v-else :size="22" stroke-width="1" />
+     </button>
+     <button class="btn btn-sm d-flex align-items-center p-1 text-danger" @click="logout">
+      <IconPower :size="22" stroke-width="1" />
+     </button>
+    </div>
+   </div>
 
-      <!-- Panel único (raíz sin selección) -->
-      <template v-if="!nav.rightPanel">
-        <NavPanel
-          v-if="nav.leftPanel"
-          :key="nav.leftPanel.parentId ?? 'root'"
-          class="flex-grow-1"
-          :level="nav.leftPanel"
-          :active-note-id="nav.selectedNoteId"
-          @notebook-click="onNotebookClickRight"
-          @note-click="onNoteClick"
-          @reorder="onReorder"
-          @create="onCreate(nav.leftPanel, $event)"
-          @delete="onDelete(nav.leftPanel, $event)"
-        />
-      </template>
+   <!-- Panel único (raíz sin selección) -->
+   <template v-if="!nav.rightPanel">
+    <NavPanel
+     v-if="nav.leftPanel"
+     :key="nav.leftPanel.parentId ?? 'root'"
+     class="flex-grow-1"
+     :level="nav.leftPanel"
+     :active-note-id="nav.selectedNoteId"
+     @notebook-click="onNotebookClickRight"
+     @note-click="onNoteClick"
+     @reorder="onReorder"
+     @create="onCreate(nav.leftPanel, $event)"
+     @delete="onDelete(nav.leftPanel, $event)"
+    />
+   </template>
 
-      <!-- Dos paneles (profundidad > 1) -->
-      <splitpanes v-else class="split-dark flex-grow-1">
-        <pane :min-size="20" :max-size="80">
-          <NavPanel
-            :level="nav.leftPanel!"
-            :active-note-id="null"
-            :active-notebook-id="nav.activeNotebookId"
-            @notebook-click="onNotebookClickLeft"
-            @note-click="onNoteClick"
-            @reorder="onReorder"
-            @create="onCreate(nav.leftPanel!, $event)"
-            @delete="onDelete(nav.leftPanel!, $event)"
-          />
-        </pane>
-        <pane :min-size="20" :max-size="80">
-          <NavPanel
-            :level="nav.rightPanel"
-            :active-note-id="nav.selectedNoteId"
-            @notebook-click="onNotebookClickRight"
-            @note-click="onNoteClick"
-            @reorder="onReorder"
-            @create="onCreate(nav.rightPanel!, $event)"
-            @delete="onDelete(nav.rightPanel!, $event)"
-          />
-        </pane>
-      </splitpanes>
+   <!-- Dos paneles (profundidad > 1) -->
+   <splitpanes v-else class="split-dark flex-grow-1">
+    <pane :min-size="20" :max-size="80">
+     <NavPanel
+      :level="nav.leftPanel!"
+      :active-note-id="null"
+      :active-notebook-id="nav.activeNotebookId"
+      @notebook-click="onNotebookClickLeft"
+      @note-click="onNoteClick"
+      @reorder="onReorder"
+      @create="onCreate(nav.leftPanel!, $event)"
+      @delete="onDelete(nav.leftPanel!, $event)"
+     />
     </pane>
-
-    <!-- Contenido principal -->
-    <pane :min-size="40">
-      <div class="h-100 p-4 overflow-auto">
-        <p v-if="!nav.selectedNoteId" class="text-secondary">Selecciona una nota</p>
-        <p v-else class="text-secondary font-monospace small">note: {{ nav.selectedNoteId }}</p>
-      </div>
+    <pane :min-size="20" :max-size="80">
+     <NavPanel
+      :level="nav.rightPanel"
+      :active-note-id="nav.selectedNoteId"
+      @notebook-click="onNotebookClickRight"
+      @note-click="onNoteClick"
+      @reorder="onReorder"
+      @create="onCreate(nav.rightPanel!, $event)"
+      @delete="onDelete(nav.rightPanel!, $event)"
+     />
     </pane>
-  </splitpanes>
+   </splitpanes>
+  </pane>
 
-  <CreateItemModal
-    v-model:visible="modalVisible"
-    :kind="modalKind"
-    :level="modalLevel"
-  />
+  <!-- Contenido principal -->
+  <pane :min-size="40">
+   <div class="h-100 p-4 overflow-auto">
+    <p v-if="!nav.selectedNoteId" class="text-secondary">Selecciona una nota</p>
+    <p v-else class="text-secondary font-monospace small">note: {{ nav.selectedNoteId }}</p>
+   </div>
+  </pane>
+ </splitpanes>
 
-  <DeleteConfirmModal
-    v-if="deleteTarget"
-    :visible="deleteModalVisible"
-    :kind="deleteTarget.kind"
-    :title="deleteTarget.data.title"
-    @confirm="onDeleteConfirm"
-    @update:visible="onDeleteClose"
-  />
+ <CreateItemModal v-model:visible="modalVisible" :kind="modalKind" :level="modalLevel" />
+
+ <DeleteConfirmModal
+  v-if="deleteTarget"
+  :visible="deleteModalVisible"
+  :kind="deleteTarget.kind"
+  :title="deleteTarget.data.title"
+  @confirm="onDeleteConfirm"
+  @update:visible="onDeleteClose"
+ />
 </template>
-

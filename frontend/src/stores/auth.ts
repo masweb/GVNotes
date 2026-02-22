@@ -27,7 +27,11 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      await SetPassword(password)
+      const res = await SetPassword(password)
+      if (!res.success) {
+        error.value = res.error ?? 'Error al establecer la contraseña'
+        return false
+      }
       passwordSet.value = true
       status.value = 'authenticated'
       return true
@@ -43,13 +47,13 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     error.value = null
     try {
-      const ok = await VerifyPassword(password)
-      if (ok) {
-        status.value = 'authenticated'
-      } else {
+      const res = await VerifyPassword(password)
+      if (!res.success) {
         error.value = 'Contraseña incorrecta'
+        return false
       }
-      return ok
+      status.value = 'authenticated'
+      return true
     } catch (e: any) {
       error.value = e?.message ?? 'Error al verificar la contraseña'
       return false

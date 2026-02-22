@@ -96,6 +96,11 @@ export const useNavigationStore = defineStore('navigation', () => {
     newItems.forEach((item, idx) => { item.data.position = idx * 1000 })
   }
 
+  const reset = () => {
+    stack.value = []
+    selectedNoteId.value = null
+  }
+
   const removeItem = (levelParentId: string | null, itemId: string, itemKind: 'notebook' | 'note') => {
     const target = stack.value.find(l => l.parentId === levelParentId)
     if (target) {
@@ -109,5 +114,5 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
   }
 
-  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems, removeItem }
+  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems, removeItem, reset }
 })

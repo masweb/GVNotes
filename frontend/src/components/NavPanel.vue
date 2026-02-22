@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconFolder, IconFileText, IconGripVertical, IconTrash } from '@tabler/icons-vue'
+import { IconNotebook, IconNote, IconGripVertical, IconTrash } from '@tabler/icons-vue'
 import Sortable, { type SortableEvent } from 'sortablejs'
 import type { NavItem, NavLevel } from '@/stores/navigation'
 
@@ -14,6 +14,7 @@ const emit = defineEmits<{
  noteClick: [item: NavItem & { kind: 'note' }]
  reorder: [level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]]
  create: [kind: 'notebook' | 'note']
+ delete: [item: NavItem]
 }>()
 
 const searchQuery = ref('')
@@ -123,19 +124,20 @@ watch(isSearching, v => {
      @mouseleave="hoveredId = null"
     >
      <IconGripVertical
-      :size="14"
+      :size="18"
+      stroke-width="1"
       class="drag-handle flex-shrink-0 text-secondary drag-handle-icon"
       :class="{ invisible: isSearching || hoveredId !== item.data.id }"
      />
-     <IconFolder :size="16" class="flex-shrink-0 text-secondary" />
+     <IconNotebook :size="22" stroke-width="1" class="flex-shrink-0 text-secondary" />
      <span class="text-truncate flex-grow-1">{{ item.data.title }}</span>
      <button
       class="btn btn-sm p-0 item-delete-btn flex-shrink-0 text-danger"
       :class="{ 'item-delete-btn--visible': hoveredId === item.data.id }"
       type="button"
-      @click.stop
+      @click.stop="emit('delete', item)"
      >
-      <IconTrash :size="14" />
+      <IconTrash :size="22" stroke-width="1" />
      </button>
     </li>
    </ul>
@@ -156,15 +158,15 @@ watch(isSearching, v => {
       class="drag-handle flex-shrink-0 text-secondary drag-handle-icon"
       :class="{ invisible: isSearching || hoveredId !== item.data.id }"
      />
-     <IconFileText :size="16" class="flex-shrink-0" />
+     <IconNote :size="22" stroke-width="1" class="flex-shrink-0" />
      <span class="text-truncate flex-grow-1">{{ item.data.title }}</span>
      <button
       class="btn btn-sm p-0 item-delete-btn flex-shrink-0 text-danger"
       :class="{ 'item-delete-btn--visible': hoveredId === item.data.id }"
       type="button"
-      @click.stop
+      @click.stop="emit('delete', item)"
      >
-      <IconTrash :size="14" />
+      <IconTrash :size="22" stroke-width="1" />
      </button>
     </li>
    </ul>

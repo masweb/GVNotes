@@ -1,9 +1,16 @@
 <script lang="ts" setup>
 import { Splitpanes, Pane } from 'splitpanes'
-import { IconArrowLeft } from '@tabler/icons-vue'
+import { IconArrowLeft, IconPower, IconSun, IconMoon } from '@tabler/icons-vue'
 import type { NavItem, NavLevel } from '@/stores/navigation'
 
 const nav = useNavigationStore()
+const auth = useAuthStore()
+const { currentTheme, toggleTheme } = useTheme()
+
+const logout = () => {
+  nav.reset()
+  auth.logout()
+}
 
 onMounted(() => nav.init())
 
@@ -60,18 +67,27 @@ const onDeleteConfirm = async () => {
 </script>
 
 <template>
-  <splitpanes style="height: 100vh" class="split-dark">
+  <splitpanes style="height: 100vh" :class="currentTheme === 'dark' ? 'split-dark' : 'default-theme'">
     <!-- Paneles laterales -->
     <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column">
       <!-- Barra de navegación -->
-      <div class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0">
+      <div class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1">
         <button
-          class="btn btn-sm d-flex align-items-center gap-1 p-1"
+          class="btn btn-sm d-flex align-items-center p-1"
           :disabled="!nav.canGoBack"
           @click="nav.goBack()"
         >
           <IconArrowLeft :size="18" />
         </button>
+        <div class="ms-auto d-flex align-items-center gap-1">
+          <button class="btn btn-sm d-flex align-items-center p-1" @click="toggleTheme">
+            <IconSun v-if="currentTheme === 'dark'" :size="18" />
+            <IconMoon v-else :size="18" />
+          </button>
+          <button class="btn btn-sm d-flex align-items-center p-1 text-danger" @click="logout">
+            <IconPower :size="18" />
+          </button>
+        </div>
       </div>
 
       <!-- Panel único (raíz sin selección) -->

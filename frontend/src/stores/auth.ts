@@ -58,5 +58,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { status, passwordSet, loading, error, isAuthenticated, init, setPassword, verifyPassword }
+  const logout = () => {
+    status.value = 'unauthenticated'
+    error.value = null
+  }
+
+  return { status, passwordSet, loading, error, isAuthenticated, init, setPassword, verifyPassword, logout }
 })

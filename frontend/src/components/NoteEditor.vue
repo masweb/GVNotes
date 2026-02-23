@@ -27,6 +27,7 @@ import {
  IconArrowForwardUp,
  IconBold,
  IconExternalLink,
+ IconHeading,
  IconH1,
  IconH2,
  IconH3,
@@ -76,6 +77,35 @@ const cancelEditTitle = () => {
 }
 
 // Color picker
+// Headings dropdown
+const headingOpen = ref(false)
+const headingBtn = ref<HTMLElement | null>(null)
+const headingMenuStyle = ref<Record<string, string>>({})
+
+const toggleHeadingDropdown = () => {
+ if (!headingOpen.value && headingBtn.value) {
+  const rect = headingBtn.value.getBoundingClientRect()
+  headingMenuStyle.value = {
+   position: 'fixed',
+   top: `${rect.bottom + 4}px`,
+   left: `${rect.left}px`,
+   zIndex: '9999'
+  }
+ }
+ headingOpen.value = !headingOpen.value
+}
+
+const pickHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
+ editor.chain().focus().toggleHeading({ level }).run()
+ headingOpen.value = false
+}
+
+const onDocClickHeading = (e: MouseEvent) => {
+ if (headingBtn.value && !headingBtn.value.contains(e.target as Node)) {
+  headingOpen.value = false
+ }
+}
+
 const colorOpen = ref(false)
 const colorBtn = ref<HTMLElement | null>(null)
 const colorMenuStyle = ref<Record<string, string>>({})
@@ -196,6 +226,7 @@ const onDocClickLink = (e: MouseEvent) => {
 onMounted(() => {
  document.addEventListener('click', onDocClickColor)
  document.addEventListener('click', onDocClickLink)
+ document.addEventListener('click', onDocClickHeading)
 })
 
 // Insertar imagen
@@ -209,7 +240,11 @@ const insertImage = () => {
   const buffer = await file.arrayBuffer()
   const bytes = Array.from(new Uint8Array(buffer))
   const img = await SaveImage(note.value.id, file.type, bytes)
-  editor.chain().focus().setImage({ src: `/images/${img.filename}` }).run()
+  editor
+   .chain()
+   .focus()
+   .setImage({ src: `/images/${img.filename}` })
+   .run()
  }
  input.click()
 }
@@ -242,8 +277,8 @@ const editor = new Editor({
     directions: ['bottom-right', 'bottom-left', 'bottom'],
     minWidth: 80,
     minHeight: 40,
-    alwaysPreserveAspectRatio: true,
-   },
+    alwaysPreserveAspectRatio: true
+   }
   }),
   Italic,
   Link.configure({ openOnClick: false }),
@@ -294,6 +329,7 @@ watch(
 onBeforeUnmount(() => {
  document.removeEventListener('click', onDocClickColor)
  document.removeEventListener('click', onDocClickLink)
+ document.removeEventListener('click', onDocClickHeading)
  if (saveTimer.value) clearTimeout(saveTimer.value)
  editor.destroy()
 })
@@ -302,9 +338,7 @@ onBeforeUnmount(() => {
 <template>
  <div class="note-editor h-100 d-flex flex-column">
   <!-- Toolbar -->
-  <div
-   class="editor-toolbar border-0 d-flex align-items-center flex-wrap gap-1 px-2 py-1 flex-shrink-0"
-  >
+  <div class="editor-toolbar border-0 d-flex align-items-center flex-wrap gap-1 px-2 py-1 flex-shrink-0">
    <!-- History -->
    <div class="d-flex">
     <button
@@ -364,54 +398,67 @@ onBeforeUnmount(() => {
    <!-- Encabezados -->
    <div class="d-flex">
     <button
+     ref="headingBtn"
      type="button"
      class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 1 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
+     :class="{ active: editor.isActive('heading') }"
+     @click.stop="toggleHeadingDropdown"
     >
-     <IconH1 :size="22" stroke-width="1" />
-    </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 2 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-    >
-     <IconH2 :size="22" stroke-width="1" />
-    </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 3 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-    >
-     <IconH3 :size="22" stroke-width="1" />
-    </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 4 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 4 }).run()"
-    >
-     <IconH4 :size="22" stroke-width="1" />
-    </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 5 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 5 }).run()"
-    >
-     <IconH5 :size="22" stroke-width="1" />
-    </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :class="{ active: editor.isActive('heading', { level: 6 }) }"
-     @click="editor.chain().focus().toggleHeading({ level: 6 }).run()"
-    >
-     <IconH6 :size="22" stroke-width="1" />
+     <IconHeading :size="22" stroke-width="1" /><span style="font-size: 9px; line-height: 1; margin-left: 1px;">▾</span>
     </button>
    </div>
+   <Teleport to="body">
+    <div v-if="headingOpen" :style="headingMenuStyle" class="heading-dropdown border rounded shadow-sm bg-body p-1">
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 1 }) }"
+      @click="pickHeading(1)"
+     >
+      <IconH1 :size="20" stroke-width="1" />
+     </button>
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 2 }) }"
+      @click="pickHeading(2)"
+     >
+      <IconH2 :size="20" stroke-width="1" />
+     </button>
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 3 }) }"
+      @click="pickHeading(3)"
+     >
+      <IconH3 :size="20" stroke-width="1" />
+     </button>
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 4 }) }"
+      @click="pickHeading(4)"
+     >
+      <IconH4 :size="20" stroke-width="1" />
+     </button>
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 5 }) }"
+      @click="pickHeading(5)"
+     >
+      <IconH5 :size="20" stroke-width="1" />
+     </button>
+     <button
+      type="button"
+      class="btn btn-sm w-100 text-start d-flex align-items-center gap-2"
+      :class="{ active: editor.isActive('heading', { level: 6 }) }"
+      @click="pickHeading(6)"
+     >
+      <IconH6 :size="20" stroke-width="1" />
+     </button>
+    </div>
+   </Teleport>
 
    <!-- Alineación -->
    <div class="d-flex">
@@ -460,12 +507,7 @@ onBeforeUnmount(() => {
     >
      <IconLink :size="22" stroke-width="1" />
     </button>
-    <button
-     type="button"
-     class="btn btn-sm"
-     :disabled="!editor.isActive('link')"
-     @click="removeLink"
-    >
+    <button type="button" class="btn btn-sm" :disabled="!editor.isActive('link')" @click="removeLink">
      <IconLinkOff :size="22" stroke-width="1" />
     </button>
    </div>
@@ -490,7 +532,12 @@ onBeforeUnmount(() => {
     </button>
    </div>
    <Teleport to="body">
-    <div v-if="linkOpen" ref="linkPopover" :style="linkMenuStyle" class="link-modal border rounded shadow-sm bg-body p-2">
+    <div
+     v-if="linkOpen"
+     ref="linkPopover"
+     :style="linkMenuStyle"
+     class="link-modal border rounded shadow-sm bg-body p-2"
+    >
      <form class="d-flex gap-1" @submit.prevent="applyLink">
       <input
        ref="linkInput"
@@ -632,10 +679,18 @@ onBeforeUnmount(() => {
 }
 
 /* Cursores por dirección */
-[data-resize-handle="bottom-right"] { cursor: nwse-resize; }
-[data-resize-handle="bottom-left"]  { cursor: nesw-resize; }
-[data-resize-handle="bottom"]       { cursor: s-resize; width: 100%; height: 6px; border-radius: 0; }
-
+[data-resize-handle='bottom-right'] {
+ cursor: nwse-resize;
+}
+[data-resize-handle='bottom-left'] {
+ cursor: nesw-resize;
+}
+[data-resize-handle='bottom'] {
+ cursor: s-resize;
+ width: 100%;
+ height: 6px;
+ border-radius: 0;
+}
 
 .saving-badge {
  top: 12px;

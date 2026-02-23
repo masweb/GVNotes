@@ -135,15 +135,8 @@ const insertImage = () => {
   if (!file || !note.value) return
   const buffer = await file.arrayBuffer()
   const bytes = Array.from(new Uint8Array(buffer))
-  // Guardar en el backend (persistencia en disco)
-  await SaveImage(note.value.id, file.type, bytes)
-  // Insertar en el editor como data URL para que sea portable
-  const dataUrl = await new Promise<string>(resolve => {
-   const reader = new FileReader()
-   reader.onload = () => resolve(reader.result as string)
-   reader.readAsDataURL(file)
-  })
-  editor.chain().focus().setImage({ src: dataUrl }).run()
+  const img = await SaveImage(note.value.id, file.type, bytes)
+  editor.chain().focus().setImage({ src: `/images/${img.filename}` }).run()
  }
  input.click()
 }
@@ -170,7 +163,7 @@ const editor = new Editor({
   History,
   Image.configure({
    inline: false,
-   allowBase64: true,
+   allowBase64: false,
    resize: {
     enabled: true,
     directions: ['bottom-right', 'bottom-left', 'bottom'],

@@ -76,23 +76,30 @@ const onRename = (level: NavLevel, newTitle: string) => {
 <template>
  <splitpanes style="height: 100vh" :class="currentTheme === 'dark' ? 'split-dark' : 'default-theme'">
   <!-- Paneles laterales -->
-  <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column">
+  <pane :size="25" :min-size="10" :max-size="60" class="d-flex flex-column" style="min-width: 250px">
    <!-- Barra de navegación -->
-   <div
-    class="d-flex align-items-center px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0 gap-1"
-    style="height: 42px"
-   >
-    <button class="btn btn-sm d-flex align-items-center p-1" :disabled="!nav.canGoBack" @click="nav.goBack()">
-     <IconArrowLeft :size="22" stroke-width="1" />
-    </button>
-    <div class="ms-auto d-flex align-items-center gap-1">
-     <button class="btn btn-sm d-flex align-items-center p-1" @click="toggleTheme">
-      <IconSun v-if="currentTheme === 'dark'" :size="22" stroke-width="1" />
-      <IconMoon v-else :size="22" stroke-width="1" />
+   <div class="border-bottom flex-shrink-0 mainbar">
+    <!-- Piso 1: título de la app (arrastrable) -->
+    <div
+     class="d-flex align-items-center justify-content-center toolbar-bg"
+     style="height: 48px; --wails-draggable: drag"
+    >
+     <span class="fw-semibold" style="padding-top: 0.2rem">GVNotes</span>
+    </div>
+    <!-- Piso 2: controles de navegación -->
+    <div class="d-flex align-items-center px-2 gap-1" style="height: 42px">
+     <button class="btn border-0 d-flex align-items-center p-1" tabindex="-1" :disabled="!nav.canGoBack" @click="nav.goBack()">
+      <IconArrowLeft :size="22" stroke-width="1" />
      </button>
-     <button class="btn btn-sm d-flex align-items-center p-1 text-danger" @click="logout">
-      <IconPower :size="22" stroke-width="1" />
-     </button>
+     <div class="ms-auto d-flex align-items-center gap-1">
+      <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="toggleTheme">
+       <IconSun v-if="currentTheme === 'dark'" :size="22" stroke-width="1" />
+       <IconMoon v-else :size="22" stroke-width="1" />
+      </button>
+      <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="logout">
+       <IconPower :size="22" stroke-width="1" />
+      </button>
+     </div>
     </div>
    </div>
 

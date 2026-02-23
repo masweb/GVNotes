@@ -34,33 +34,38 @@ html,
 }
 
 .nav-panel {
-  -webkit-user-select: none !important;
-  user-select: none !important;
+ -webkit-user-select: none !important;
+ user-select: none !important;
+
+ .list-group-item {
+  border-left: none;
+  border-right: none;
+ }
 }
 
 .nav-draggable-item {
-  cursor: default;
+ cursor: default;
 
-  .drag-handle-icon {
-    cursor: grab;
+ .drag-handle-icon {
+  cursor: grab;
+ }
+
+ .item-delete-btn {
+  opacity: 0;
+
+  &.item-delete-btn--visible {
+   opacity: 1;
   }
-
-  .item-delete-btn {
-    opacity: 0;
-
-    &.item-delete-btn--visible {
-      opacity: 1;
-    }
-  }
+ }
 }
 
 .drag-ghost {
-  opacity: 0.4;
+ opacity: 0.4;
 }
 
 .drag-fallback {
-  opacity: 0.8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+ opacity: 0.8;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 [data-coreui-theme='dark'] {
@@ -77,5 +82,56 @@ html,
  .card,
  .modal-content {
   box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.5);
+ }
+}
+
+.mainbar {
+ --wails-draggable: no-drag;
+
+ .btn:active {
+  border-color: transparent;
+  box-shadow: none !important;
+ }
+}
+
+.toolbar-bg,
+.editor-toolbar {
+ background-color: #E1E1E1;
+}
+
+[data-coreui-theme='dark'] {
+ .toolbar-bg,
+ .editor-toolbar {
+  background-color: var(--cui-tertiary-bg) !important;
+ }
+}
+
+.editor-toolbar {
+ --wails-draggable: drag;
+ height: 48px;
+
+ .btn {
+  border-color: transparent;
+ }
+
+ .btn:disabled {
+  opacity: 0.3;
+ }
+
+ .btn.active,
+ .btn:active {
+  background-color: #ffffff;
+  border-color: transparent;
+  box-shadow: none !important;
+ }
+
+ [data-coreui-theme='dark'] &,
+ [data-bs-theme='dark'] & {
+  .btn.active,
+  .btn:active {
+   background-color: #222531;
+   border-color: transparent;
+   box-shadow: none !important;
+  }
  }
 }

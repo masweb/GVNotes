@@ -197,10 +197,10 @@ onBeforeUnmount(() => {
  <div class="note-editor h-100 d-flex flex-column">
   <!-- Toolbar -->
   <div
-   class="editor-toolbar d-flex align-items-center flex-wrap gap-1 px-2 py-1 border-bottom bg-body-tertiary flex-shrink-0"
+   class="editor-toolbar border-0 d-flex align-items-center flex-wrap gap-1 px-2 py-1 flex-shrink-0"
   >
    <!-- History -->
-   <div class="btn-group btn-group-sm">
+   <div class="d-flex">
     <button
      type="button"
      class="btn btn-sm"
@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
    </div>
 
    <!-- Formato básico -->
-   <div class="btn-group btn-group-sm">
+   <div class="d-flex">
     <button
      type="button"
      class="btn btn-sm"
@@ -248,7 +248,7 @@ onBeforeUnmount(() => {
    </div>
 
    <!-- Encabezados -->
-   <div class="btn-group btn-group-sm">
+   <div class="d-flex">
     <button
      type="button"
      class="btn btn-sm"
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
    </div>
 
    <!-- Alineación -->
-   <div class="btn-group btn-group-sm">
+   <div class="d-flex">
     <button
      type="button"
      class="btn btn-sm"
@@ -336,7 +336,7 @@ onBeforeUnmount(() => {
    </div>
 
    <!-- Color -->
-   <div class="btn-group btn-group-sm">
+   <div class="d-flex">
     <button
      ref="colorBtn"
      type="button"
@@ -370,7 +370,6 @@ onBeforeUnmount(() => {
      </button>
     </div>
    </Teleport>
-
   </div>
 
   <Teleport to="body">
@@ -417,6 +416,7 @@ onBeforeUnmount(() => {
  outline: none !important;
 }
 
+
 .saving-badge {
  top: 12px;
  right: 16px;
@@ -430,7 +430,6 @@ onBeforeUnmount(() => {
 .fade-leave-to {
  opacity: 0;
 }
-
 
 .color-swatch {
  width: 22px;

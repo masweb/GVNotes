@@ -11,6 +11,7 @@ declare global {
   const FormContextKey: typeof import('vee-validate').FormContextKey
   const LocalImage: typeof import('./composables/useLocalImage').LocalImage
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
+  const availableLocales: typeof import('./composables/useLocale').availableLocales
   const computed: typeof import('vue').computed
   const configure: typeof import('vee-validate').configure
   const createApp: typeof import('vue').createApp
@@ -94,6 +95,7 @@ declare global {
   const useIsFormValid: typeof import('vee-validate').useIsFormValid
   const useIsSubmitting: typeof import('vee-validate').useIsSubmitting
   const useLink: typeof import('vue-router').useLink
+  const useLocale: typeof import('./composables/useLocale').useLocale
   const useModel: typeof import('vue').useModel
   const useNavActions: typeof import('./composables/useNavActions').useNavActions
   const useNavigationStore: typeof import('./stores/navigation').useNavigationStore
@@ -119,6 +121,9 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { LocaleOption } from './composables/useLocale'
+  import('./composables/useLocale')
   // @ts-ignore
   export type { NavItem, NavLevel } from './stores/navigation'
   import('./stores/navigation')

@@ -87,7 +87,7 @@ const submit = handleSubmit(async (values) => {
       :class="{ 'cursor-pointer': !!level.parentId }"
       :title="level.parentId ? t('nav.rename_hint') : undefined"
       @click="startEdit"
-    >{{ level.title }}</span>
+    >{{ level.parentId ? level.title : t('nav.root_title') }}</span>
 
     <div class="dropdown-wrapper flex-shrink-0">
       <button

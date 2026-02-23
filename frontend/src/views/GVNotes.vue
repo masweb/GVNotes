@@ -2,17 +2,11 @@
 const { t } = useI18n()
 
 import { Splitpanes, Pane } from 'splitpanes'
-import { IconArrowLeft, IconPower, IconSettings } from '@tabler/icons-vue'
+import { IconArrowLeft, IconSettings } from '@tabler/icons-vue'
 import type { NavItem, NavLevel } from '@/stores/navigation'
 
 const nav = useNavigationStore()
-const auth = useAuthStore()
 const { currentTheme } = useTheme()
-
-const logout = () => {
- nav.reset()
- auth.logout()
-}
 
 onMounted(() => nav.init())
 
@@ -103,9 +97,6 @@ const settingsVisible = ref(false)
      <div class="ms-auto d-flex align-items-center gap-1">
       <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="settingsVisible = true">
        <IconSettings :size="22" stroke-width="1" />
-      </button>
-      <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="logout">
-       <IconPower :size="22" stroke-width="1" />
       </button>
      </div>
     </div>

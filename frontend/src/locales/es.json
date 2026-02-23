@@ -65,6 +65,8 @@
     "title": "Configuración",
     "theme": "Tema",
     "theme_dark": "Oscuro",
-    "theme_light": "Claro"
+    "theme_light": "Claro",
+    "language": "Idioma",
+    "lock": "Bloquear App"
   }
 }

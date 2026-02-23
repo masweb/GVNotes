@@ -1,7 +1,4 @@
 import { ListNotebooks, ListNotes, UpdateNotebookPosition, UpdateNotePosition, UpdateNotebookTitle } from '../../wailsjs/go/main/App'
-import { i18n } from '@/i18n/i18n'
-
-const t = i18n.global.t
 import type { dto } from '../../wailsjs/go/models'
 
 export type NavItem =
@@ -37,7 +34,7 @@ export const useNavigationStore = defineStore('navigation', () => {
   const init = async () => {
     loading.value = true
     try {
-      const root = await loadLevel(null, t('nav.root_title'))
+      const root = await loadLevel(null, '')
       stack.value = [root]
     } finally {
       loading.value = false

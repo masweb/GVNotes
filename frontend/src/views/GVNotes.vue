@@ -2,12 +2,12 @@
 const { t } = useI18n()
 
 import { Splitpanes, Pane } from 'splitpanes'
-import { IconArrowLeft, IconPower, IconSun, IconMoon } from '@tabler/icons-vue'
+import { IconArrowLeft, IconPower, IconSettings } from '@tabler/icons-vue'
 import type { NavItem, NavLevel } from '@/stores/navigation'
 
 const nav = useNavigationStore()
 const auth = useAuthStore()
-const { currentTheme, toggleTheme } = useTheme()
+const { currentTheme } = useTheme()
 
 const logout = () => {
  nav.reset()
@@ -77,6 +77,9 @@ const onRename = (level: NavLevel, newTitle: string) => {
  if (!level.parentId) return
  nav.renameNotebook(level.parentId, newTitle)
 }
+
+// Modal de configuración
+const settingsVisible = ref(false)
 </script>
 
 <template>
@@ -98,9 +101,8 @@ const onRename = (level: NavLevel, newTitle: string) => {
       <IconArrowLeft :size="22" stroke-width="1" />
      </button>
      <div class="ms-auto d-flex align-items-center gap-1">
-      <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="toggleTheme">
-       <IconSun v-if="currentTheme === 'dark'" :size="22" stroke-width="1" />
-       <IconMoon v-else :size="22" stroke-width="1" />
+      <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="settingsVisible = true">
+       <IconSettings :size="22" stroke-width="1" />
       </button>
       <button class="btn btn-sm d-flex align-items-center p-1" tabindex="-1" @click="logout">
        <IconPower :size="22" stroke-width="1" />
@@ -171,6 +173,7 @@ const onRename = (level: NavLevel, newTitle: string) => {
  </splitpanes>
 
  <CreateItemModal v-model:visible="modalVisible" :kind="modalKind" :level="modalLevel" />
+ <AppSettingsModal v-model:visible="settingsVisible" />
 
  <DeleteConfirmModal
   v-if="deleteTarget"

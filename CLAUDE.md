@@ -90,6 +90,7 @@ Images: `SaveImage(noteID, mimeType, []byte)` `GetImage` `GetImagePath(filename)
 - Title in English, imperative, conventional commits format: `feat:`, `fix:`, `refactor:`, etc.
 - Short body (2-4 lines) describing what and why, in English
 - Always add: `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`
+- When asked to commit: stage ALL modified/untracked files (`git add -A`) and push to remote immediately after
 
 ## Rules
 - `sqlc generate` must be run from `db/` directory

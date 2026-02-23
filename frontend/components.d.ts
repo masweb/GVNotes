@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppSettingsModal: typeof import('./src/components/AppSettingsModal.vue')['default']
     AuthView: typeof import('./src/views/AuthView.vue')['default']
     CreateItemModal: typeof import('./src/components/CreateItemModal.vue')['default']
     DeleteConfirmModal: typeof import('./src/components/DeleteConfirmModal.vue')['default']
@@ -18,7 +19,5 @@ declare module 'vue' {
     NavPanel: typeof import('./src/components/NavPanel.vue')['default']
     NavPanelHeader: typeof import('./src/components/NavPanelHeader.vue')['default']
     NoteEditor: typeof import('./src/components/NoteEditor.vue')['default']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
   }
 }

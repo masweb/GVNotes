@@ -44,6 +44,7 @@
   },
   "common": {
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "delete": "Eliminar",
     "deleting": "Eliminando…",
     "create": "Crear",
@@ -59,5 +60,11 @@
   },
   "color": {
     "none": "Sin color"
+  },
+  "settings": {
+    "title": "Configuración",
+    "theme": "Tema",
+    "theme_dark": "Oscuro",
+    "theme_light": "Claro"
   }
 }

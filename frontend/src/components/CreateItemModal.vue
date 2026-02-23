@@ -68,10 +68,10 @@ watch(() => props.visible, async (v) => {
 <template>
   <CModal :visible="visible" alignment="top" @close="close">
     <CModalHeader>
-      <CModalTitle>{{ title }}</CModalTitle>
+      <h5 class="modal-title">{{ title }}</h5>
     </CModalHeader>
     <form @submit.prevent="onSubmit">
-      <CModalBody>
+      <div class="modal-body">
         <div class="mb-1">
           <input
             ref="inputEl"
@@ -85,13 +85,13 @@ watch(() => props.visible, async (v) => {
           <div v-if="errorMessage" class="invalid-feedback">{{ errorMessage }}</div>
         </div>
         <p v-if="error" class="text-danger small mt-2 mb-0">{{ error }}</p>
-      </CModalBody>
-      <CModalFooter>
+      </div>
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary btn-sm" @click="close">{{ t('common.cancel') }}</button>
         <button type="submit" class="btn btn-primary btn-sm" :disabled="loading">
           {{ loading ? t('common.creating') : t('common.create') }}
         </button>
-      </CModalFooter>
+      </div>
     </form>
   </CModal>
 </template>

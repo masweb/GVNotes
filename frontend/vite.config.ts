@@ -4,12 +4,18 @@ import Components from 'unplugin-vue-components/vite'
 import vue from '@vitejs/plugin-vue'
 import { type Plugin, defineConfig } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n'
+import { resolve } from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
  plugins: [
   vue(),
   vueDevTools(),
+  VueI18nPlugin.vite({
+   include: [resolve(__dirname, './locales/**')],
+   runtimeOnly: false
+  }),
   AutoImport({
    dts: 'src/auto-imports.d.ts',
    imports: ['vue', 'pinia', 'vue-router', 'vue-i18n', 'vee-validate'],

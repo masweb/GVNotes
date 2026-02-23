@@ -26,6 +26,10 @@ const onNoteClick = (item: NavItem & { kind: 'note' }) => {
  nav.selectNote(item.data.id)
 }
 
+const onNoteClickFromLeft = (item: NavItem & { kind: 'note' }) => {
+ nav.selectNoteFromRoot(item.data.id)
+}
+
 const onReorder = (level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]) => {
  nav.reorderItems(level, kind, newItems)
 }
@@ -125,10 +129,10 @@ const onRename = (level: NavLevel, newTitle: string) => {
     <pane :min-size="20" :max-size="80">
      <NavPanel
       :level="nav.leftPanel!"
-      :active-note-id="null"
+      :active-note-id="nav.selectedNoteId"
       :active-notebook-id="nav.activeNotebookId"
       @notebook-click="onNotebookClickLeft"
-      @note-click="onNoteClick"
+      @note-click="onNoteClickFromLeft"
       @reorder="onReorder"
       @create="onCreate(nav.leftPanel!, $event)"
       @delete="onDelete(nav.leftPanel!, $event)"

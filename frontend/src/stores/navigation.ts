@@ -69,6 +69,11 @@ export const useNavigationStore = defineStore('navigation', () => {
     selectedNoteId.value = noteId
   }
 
+  const selectNoteFromRoot = (noteId: string) => {
+    stack.value = stack.value.slice(0, 1)
+    selectedNoteId.value = noteId
+  }
+
   const goBack = () => {
     if (stack.value.length > 1) {
       stack.value = stack.value.slice(0, -1)
@@ -133,5 +138,5 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
   }
 
-  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, goBack, reorderItems, removeItem, renameItem, renameNotebook, reset }
+  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, selectNoteFromRoot, goBack, reorderItems, removeItem, renameItem, renameNotebook, reset }
 })

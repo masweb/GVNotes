@@ -3,18 +3,6 @@ $primary: #00b1ff; // Color para el tema light
 @import '@coreui/coreui/scss/coreui';
 @import 'splitpanes-dark';
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-.form-control:focus,
-.form-select:focus {
- box-shadow: none !important;
- border-color: $primary !important;
-}
-
-[data-coreui-theme='dark'] {
- .form-control:focus,
- .form-select:focus {
-  border-color: $primary-dark !important;
- }
-}
 
 html {
  -webkit-font-smoothing: antialiased;
@@ -68,7 +56,22 @@ html,
  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.form-control:focus,
+.form-select:focus {
+ box-shadow: none !important;
+ border-color: $primary !important;
+}
+
+.toolbar-bg,
+.editor-toolbar {
+ background-color: #e1e1e1;
+}
+
 [data-coreui-theme='dark'] {
+ .form-control:focus,
+ .form-select:focus {
+  border-color: $primary-dark !important;
+ }
  --primary: #{$primary-dark}; // Usa interpolación de Sass para convertir $primary-dark a CSS
 
  ::-webkit-scrollbar-track {
@@ -92,14 +95,6 @@ html,
   border-color: transparent;
   box-shadow: none !important;
  }
-}
-
-.toolbar-bg,
-.editor-toolbar {
- background-color: #e1e1e1;
-}
-
-[data-coreui-theme='dark'] {
  .toolbar-bg,
  .editor-toolbar {
   background-color: var(--cui-tertiary-bg) !important;

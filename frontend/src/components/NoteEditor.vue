@@ -5,6 +5,7 @@ import Color from '@tiptap/extension-color'
 import Document from '@tiptap/extension-document'
 import Heading from '@tiptap/extension-heading'
 import History from '@tiptap/extension-history'
+import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
 import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
@@ -28,9 +29,10 @@ import {
  IconH6,
  IconItalic,
  IconPalette,
+ IconPhoto,
  IconStrikethrough
 } from '@tabler/icons-vue'
-import { GetNote, UpdateNoteContent, UpdateNoteTitle } from '../../wailsjs/go/main/App'
+import { GetNote, SaveImage, UpdateNoteContent, UpdateNoteTitle } from '../../wailsjs/go/main/App'
 import type { dto } from '../../wailsjs/go/models'
 
 const props = defineProps<{ noteId: string }>()
@@ -123,6 +125,29 @@ const onDocClickColor = (e: MouseEvent) => {
 onMounted(() => document.addEventListener('click', onDocClickColor))
 onBeforeUnmount(() => document.removeEventListener('click', onDocClickColor))
 
+// Insertar imagen
+const insertImage = () => {
+ const input = document.createElement('input')
+ input.type = 'file'
+ input.accept = 'image/png,image/jpeg,image/gif,image/webp'
+ input.onchange = async () => {
+  const file = input.files?.[0]
+  if (!file || !note.value) return
+  const buffer = await file.arrayBuffer()
+  const bytes = Array.from(new Uint8Array(buffer))
+  // Guardar en el backend (persistencia en disco)
+  await SaveImage(note.value.id, file.type, bytes)
+  // Insertar en el editor como data URL para que sea portable
+  const dataUrl = await new Promise<string>(resolve => {
+   const reader = new FileReader()
+   reader.onload = () => resolve(reader.result as string)
+   reader.readAsDataURL(file)
+  })
+  editor.chain().focus().setImage({ src: dataUrl }).run()
+ }
+ input.click()
+}
+
 const submitTitle = handleTitleSubmit(async values => {
  if (!note.value || values.title === note.value.title) {
   cancelEditTitle()
@@ -143,6 +168,17 @@ const editor = new Editor({
   Document,
   Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
   History,
+  Image.configure({
+   inline: false,
+   allowBase64: true,
+   resize: {
+    enabled: true,
+    directions: ['bottom-right', 'bottom-left', 'bottom'],
+    minWidth: 80,
+    minHeight: 40,
+    alwaysPreserveAspectRatio: true,
+   },
+  }),
   Italic,
   Paragraph,
   Strike,
@@ -347,6 +383,13 @@ onBeforeUnmount(() => {
      <IconPalette :size="22" stroke-width="1" :style="{ color: editor.getAttributes('textStyle').color }" />
     </button>
    </div>
+
+   <!-- Imagen -->
+   <div class="d-flex">
+    <button type="button" class="btn btn-sm" :disabled="!note" @click="insertImage">
+     <IconPhoto :size="22" stroke-width="1" />
+    </button>
+   </div>
    <Teleport to="body">
     <div v-if="colorOpen" :style="colorMenuStyle" class="color-picker-menu border rounded shadow-sm bg-body p-2">
      <div class="d-flex flex-wrap gap-1" style="width: 134px">
@@ -415,6 +458,46 @@ onBeforeUnmount(() => {
 .tiptap.ProseMirror:focus-visible {
  outline: none !important;
 }
+
+.tiptap img {
+ max-width: 100%;
+ height: auto;
+ border-radius: 4px;
+ display: block;
+}
+
+/* ResizableNodeView — container */
+[data-resize-container] {
+ display: inline-flex !important;
+ max-width: 100%;
+ margin: 4px 0;
+}
+
+/* Selección de la imagen */
+[data-resize-container].ProseMirror-selectednode [data-resize-wrapper] {
+ outline: 2px solid var(--bs-primary);
+ border-radius: 4px;
+}
+
+/* Handles */
+[data-resize-handle] {
+ width: 10px;
+ height: 10px;
+ background: var(--bs-primary);
+ border: 2px solid var(--bs-body-bg);
+ border-radius: 50%;
+ opacity: 0;
+ transition: opacity 0.15s;
+}
+
+[data-resize-container].ProseMirror-selectednode [data-resize-handle] {
+ opacity: 1;
+}
+
+/* Cursores por dirección */
+[data-resize-handle="bottom-right"] { cursor: nwse-resize; }
+[data-resize-handle="bottom-left"]  { cursor: nesw-resize; }
+[data-resize-handle="bottom"]       { cursor: s-resize; width: 100%; height: 6px; border-radius: 0; }
 
 
 .saving-badge {

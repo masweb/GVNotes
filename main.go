@@ -2,12 +2,18 @@ package main
 
 import (
 	"embed"
+	"log"
+	"mime"
+	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+	"gvnotes/internal/config"
 )
 
 //go:embed all:frontend/dist
@@ -16,12 +22,39 @@ var assets embed.FS
 //go:embed db/migrations
 var migrations embed.FS
 
+// imageFileHandler serves image files stored on disk under imagesDir.
+// Only the base filename is used to prevent path traversal.
+type imageFileHandler struct {
+	imagesDir string
+}
+
+func (h *imageFileHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	filename := filepath.Base(req.URL.Path)
+	fullPath := filepath.Join(h.imagesDir, filename)
+	data, err := os.ReadFile(fullPath)
+	if err != nil {
+		http.NotFound(res, req)
+		return
+	}
+	ct := mime.TypeByExtension(filepath.Ext(filename))
+	if ct == "" {
+		ct = "application/octet-stream"
+	}
+	res.Header().Set("Content-Type", ct)
+	res.Write(data)
+}
+
 func main() {
 	appMigrations = migrations
 
+	imagesDir, err := config.ImagesDir()
+	if err != nil {
+		log.Fatalf("failed to resolve images directory: %v", err)
+	}
+
 	app := NewApp()
 
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:                    "GVNotes",
 		Width:                    1600,
 		Height:                   1200,
@@ -36,7 +69,8 @@ func main() {
 		CSSDragProperty:  "--wails-draggable",
 		CSSDragValue:     "drag",
 		AssetServer: &assetserver.Options{
-			Assets: assets,
+			Assets:  assets,
+			Handler: &imageFileHandler{imagesDir: imagesDir},
 		},
 		Windows: &windows.Options{
 			WebviewIsTransparent: true,

@@ -35,5 +35,12 @@ export default defineConfig({
   alias: {
    '@': fileURLToPath(new URL('./src', import.meta.url))
   }
+ },
+ server: {
+  // Proxy /images/* to the Go image server (dev mode only).
+  // Port must match imageServerPort in app.go.
+  proxy: {
+   '/images': 'http://127.0.0.1:34201'
+  }
  }
 })

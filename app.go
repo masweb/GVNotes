@@ -4,9 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"embed"
-	"fmt"
 	"log"
-	"net"
 	"net/http"
 
 	db "gvnotes/db/generated"
@@ -21,15 +19,17 @@ var appMigrations embed.FS
 
 // App is the Wails application struct. It acts as a facade over internal
 // controllers, exposing methods to the frontend via Wails bindings.
+// imageServerPort is the fixed port used for the local image HTTP server.
+// Must match the proxy target in vite.config.ts for dev mode.
+const imageServerPort = "34201"
+
 type App struct {
-	ctx            context.Context
-	sqlDB          *sql.DB
-	auth           *controllers.AuthController
-	notebook       *controllers.NotebookController
-	note           *controllers.NoteController
-	image          *controllers.ImageController
-	imageListener  net.Listener
-	imageServerURL string
+	ctx      context.Context
+	sqlDB    *sql.DB
+	auth     *controllers.AuthController
+	notebook *controllers.NotebookController
+	note     *controllers.NoteController
+	image    *controllers.ImageController
 }
 
 // NewApp creates a new App application struct.
@@ -59,16 +59,11 @@ func (a *App) startup(ctx context.Context) {
 	a.note = controllers.NewNoteController(services.NewNoteService(querier))
 	a.image = controllers.NewImageController(services.NewImageService(querier, imagesDir))
 
-	// Start a local HTTP server to serve image files. This is necessary because
-	// the Wails AssetServer Handler does not work in dev mode with Vite v5+.
-	ln, err := net.Listen("tcp", "127.0.0.1:0")
-	if err != nil {
-		log.Fatalf("failed to start image server: %v", err)
-	}
-	a.imageListener = ln
-	a.imageServerURL = fmt.Sprintf("http://127.0.0.1:%d", ln.Addr().(*net.TCPAddr).Port)
+	// Start a local HTTP server on a fixed port to serve image files.
+	// In dev mode (Vite), this port is proxied via vite.config.ts server.proxy.
+	// In production, the Wails AssetServer Handler serves /images/* directly.
 	go func() {
-		if err := http.Serve(ln, &imageFileHandler{imagesDir: imagesDir}); err != nil && err != http.ErrServerClosed {
+		if err := http.ListenAndServe("127.0.0.1:"+imageServerPort, &imageFileHandler{imagesDir: imagesDir}); err != nil {
 			log.Printf("image server stopped: %v", err)
 		}
 	}()
@@ -76,17 +71,9 @@ func (a *App) startup(ctx context.Context) {
 
 // shutdown is called when the app closes.
 func (a *App) shutdown(_ context.Context) {
-	if a.imageListener != nil {
-		a.imageListener.Close()
-	}
 	if a.sqlDB != nil {
 		a.sqlDB.Close()
 	}
-}
-
-// GetImageServerURL returns the base URL of the local image HTTP server.
-func (a *App) GetImageServerURL() string {
-	return a.imageServerURL
 }
 
 // --- Auth ---

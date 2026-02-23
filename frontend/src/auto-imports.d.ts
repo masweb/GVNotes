@@ -9,6 +9,7 @@ declare global {
   const EffectScope: typeof import('vue').EffectScope
   const FieldContextKey: typeof import('vee-validate').FieldContextKey
   const FormContextKey: typeof import('vee-validate').FormContextKey
+  const LocalImage: typeof import('./composables/useLocalImage').LocalImage
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
   const configure: typeof import('vee-validate').configure
@@ -84,6 +85,7 @@ declare global {
   const useFormValues: typeof import('vee-validate').useFormValues
   const useI18n: typeof import('vue-i18n').useI18n
   const useId: typeof import('vue').useId
+  const useImageServer: typeof import('./composables/useImageServer').useImageServer
   const useIsFieldDirty: typeof import('vee-validate').useIsFieldDirty
   const useIsFieldTouched: typeof import('vee-validate').useIsFieldTouched
   const useIsFieldValid: typeof import('vee-validate').useIsFieldValid

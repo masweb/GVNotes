@@ -34,10 +34,6 @@ export function GetImagePath(arg1) {
   return window['go']['main']['App']['GetImagePath'](arg1);
 }
 
-export function GetImageServerURL() {
-  return window['go']['main']['App']['GetImageServerURL']();
-}
-
 export function GetNote(arg1) {
   return window['go']['main']['App']['GetNote'](arg1);
 }

@@ -1,0 +1,63 @@
+{
+  "auth": {
+    "title_set": "Crear contraseña",
+    "title_verify": "Acceder a GVNotes",
+    "password_label": "Contraseña",
+    "password_placeholder_new": "Mínimo 8 caracteres",
+    "confirm_label": "Confirmar contraseña",
+    "confirm_placeholder": "Repite la contraseña",
+    "password_placeholder_current": "Introduce tu contraseña",
+    "btn_set": "Establecer contraseña",
+    "btn_enter": "Entrar",
+    "error_connect": "Error al conectar con la aplicación",
+    "error_set_password": "Error al establecer la contraseña",
+    "error_wrong_password": "Contraseña incorrecta",
+    "error_verify_password": "Error al verificar la contraseña"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "min": "Mínimo {min} caracteres",
+    "confirmed": "Las contraseñas no coinciden"
+  },
+  "nav": {
+    "root_title": "Inicio",
+    "rename_hint": "Click para renombrar",
+    "new_note": "Nueva nota",
+    "new_notebook": "Nueva libreta",
+    "search_placeholder": "Buscar...",
+    "empty": "Vacío",
+    "no_results": "Sin resultados"
+  },
+  "notebook": {
+    "delete_title": "Eliminar libreta",
+    "delete_warning": "Se eliminarán también todas las libretas y notas que contiene.",
+    "new_title": "Nueva libreta"
+  },
+  "note": {
+    "delete_title": "Eliminar nota",
+    "new_title": "Nueva nota",
+    "select_hint": "Selecciona una nota",
+    "loading": "Cargando…",
+    "saving": "Guardando…",
+    "characters": "caracteres",
+    "words": "palabras"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "deleting": "Eliminando…",
+    "create": "Crear",
+    "creating": "Creando…",
+    "confirm_delete": "¿Eliminar",
+    "name_placeholder": "Nombre",
+    "error_create": "Error al crear"
+  },
+  "link": {
+    "open": "Abrir enlace",
+    "edit": "Editar enlace",
+    "remove": "Eliminar enlace"
+  },
+  "color": {
+    "none": "Sin color"
+  }
+}

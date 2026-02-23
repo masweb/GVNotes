@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { t } = useI18n()
+
 import Bold from '@tiptap/extension-bold'
 import CharacterCount from '@tiptap/extension-character-count'
 import Color from '@tiptap/extension-color'
@@ -521,7 +523,7 @@ onBeforeUnmount(() => {
       />
      </div>
      <button type="button" class="btn btn-sm btn-link px-0 mt-1 text-secondary small" @click="clearColor">
-      Sin color
+      {{ t('color.none') }}
      </button>
     </div>
    </Teleport>
@@ -529,7 +531,7 @@ onBeforeUnmount(() => {
 
   <Teleport to="body">
    <Transition name="fade">
-    <span v-if="saving" class="saving-badge position-fixed text-secondary small">Guardando…</span>
+    <span v-if="saving" class="saving-badge position-fixed text-secondary small">{{ t('note.saving') }}</span>
    </Transition>
   </Teleport>
 
@@ -546,14 +548,14 @@ onBeforeUnmount(() => {
     />
     <div v-if="titleError" class="invalid-feedback">{{ titleError }}</div>
    </form>
-   <h5 v-else class="mb-0 text-truncate cursor-pointer" title="Click para renombrar" @click="startEditTitle">
+   <h5 v-else class="mb-0 text-truncate cursor-pointer" :title="t('nav.rename_hint')" @click="startEditTitle">
     {{ note.title }}
    </h5>
   </div>
 
   <!-- Contenido -->
   <div class="editor-content flex-grow-1 overflow-auto px-4 py-2" @click.self="editor.commands.focus()">
-   <div v-if="loading" class="text-secondary small mt-3">Cargando…</div>
+   <div v-if="loading" class="text-secondary small mt-3">{{ t('note.loading') }}</div>
    <EditorContent v-else :editor="editor" />
    <BubbleMenu
     :editor="editor"
@@ -566,15 +568,15 @@ onBeforeUnmount(() => {
      target="_blank"
      rel="noopener noreferrer"
      class="btn btn-sm p-0 text-primary"
-     title="Abrir enlace"
+     :title="t('link.open')"
      @click.prevent="openLinkHref"
     >
      <IconExternalLink :size="16" stroke-width="1.5" />
     </a>
-    <button type="button" class="btn btn-sm p-0 text-secondary" title="Editar enlace" @click="openLinkModal">
+    <button type="button" class="btn btn-sm p-0 text-secondary" :title="t('link.edit')" @click="openLinkModal">
      <IconLink :size="16" stroke-width="1.5" />
     </button>
-    <button type="button" class="btn btn-sm p-0 text-danger" title="Eliminar enlace" @click="removeLink">
+    <button type="button" class="btn btn-sm p-0 text-danger" :title="t('link.remove')" @click="removeLink">
      <IconLinkOff :size="16" stroke-width="1.5" />
     </button>
    </BubbleMenu>
@@ -582,8 +584,8 @@ onBeforeUnmount(() => {
 
   <!-- Footer -->
   <div class="border-top px-3 py-1 text-end text-secondary small flex-shrink-0">
-   <span class="me-3">{{ editor.storage.characterCount.characters() }} caracteres</span>
-   <span>{{ editor.storage.characterCount.words() }} palabras</span>
+   <span class="me-3">{{ editor.storage.characterCount.characters() }} {{ t('note.characters') }}</span>
+   <span>{{ editor.storage.characterCount.words() }} {{ t('note.words') }}</span>
   </div>
  </div>
 </template>

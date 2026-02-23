@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { t } = useI18n()
+
 import { IconPlus, IconNote, IconNotebook } from '@tabler/icons-vue'
 import type { NavLevel } from '@/stores/navigation'
 
@@ -83,7 +85,7 @@ const submit = handleSubmit(async (values) => {
       v-else
       class="fw-semibold text-truncate flex-grow-1"
       :class="{ 'cursor-pointer': !!level.parentId }"
-      :title="level.parentId ? 'Click para renombrar' : undefined"
+      :title="level.parentId ? t('nav.rename_hint') : undefined"
       @click="startEdit"
     >{{ level.title }}</span>
 
@@ -97,8 +99,8 @@ const submit = handleSubmit(async (values) => {
         <IconPlus :size="16" />
       </button>
       <ul class="dropdown-menu" :class="{ show: open }" :style="menuStyle">
-        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('note')"><IconNote :size="22" stroke-width="1" />Nueva nota</button></li>
-        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('notebook')"><IconNotebook :size="22" stroke-width="1" />Nueva libreta</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('note')"><IconNote :size="22" stroke-width="1" />{{ t('nav.new_note') }}</button></li>
+        <li><button class="dropdown-item d-flex align-items-center gap-2" type="button" @click="select('notebook')"><IconNotebook :size="22" stroke-width="1" />{{ t('nav.new_notebook') }}</button></li>
       </ul>
     </div>
   </div>

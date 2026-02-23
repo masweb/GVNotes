@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const { t } = useI18n()
 const auth = useAuthStore()
 
 // Modo: 'set' si no hay contraseña aún, 'verify' si ya existe
@@ -14,8 +15,8 @@ const { value: newPassword, errorMessage: newPasswordError } = useField<string>(
 const { value: confirmPassword, errorMessage: confirmPasswordError } = useField<string>(
  'confirmPassword',
  (val: string) => {
-  if (!val) return 'Este campo es obligatorio'
-  if (val !== newPassword.value) return 'Las contraseñas no coinciden'
+  if (!val) return t('validation.required')
+  if (val !== newPassword.value) return t('validation.confirmed')
   return true
  },
  { validateOnValueUpdate: false }
@@ -41,17 +42,17 @@ onMounted(() => firstInput.value?.focus())
 </script>
 
 <template>
- <div class="auth-wrap d-flex align-items-center justify-content-center vh-100">
+ <div class="auth-wrap d-flex align-items-center justify-content-center vh-100" style="--wails-draggable: drag">
   <div class="auth-card card p-2" style="width: 360px">
    <div class="card-body">
     <h5 class="mb-4 text-center fw-semibold">
-     {{ mode === 'set' ? 'Crear contraseña' : 'Acceder a GVNotes' }}
+     {{ mode === 'set' ? t('auth.title_set') : t('auth.title_verify') }}
     </h5>
 
     <!-- Establecer contraseña -->
     <form v-if="mode === 'set'" @submit.prevent="submitSet">
      <div class="mb-3">
-      <label class="form-label">Contraseña</label>
+      <label class="form-label">{{ t('auth.password_label') }}</label>
       <input
        ref="firstInput"
        v-model="newPassword"
@@ -59,20 +60,20 @@ onMounted(() => firstInput.value?.focus())
        class="form-control"
        :class="{ 'is-invalid': newPasswordError }"
        autocomplete="new-password"
-       placeholder="Mínimo 8 caracteres"
+       :placeholder="t('auth.password_placeholder_new')"
       />
       <div v-if="newPasswordError" class="invalid-feedback">{{ newPasswordError }}</div>
      </div>
 
      <div class="mb-4">
-      <label class="form-label">Confirmar contraseña</label>
+      <label class="form-label">{{ t('auth.confirm_label') }}</label>
       <input
        v-model="confirmPassword"
        type="password"
        class="form-control"
        :class="{ 'is-invalid': confirmPasswordError }"
        autocomplete="new-password"
-       placeholder="Repite la contraseña"
+       :placeholder="t('auth.confirm_placeholder')"
       />
       <div v-if="confirmPasswordError" class="invalid-feedback">{{ confirmPasswordError }}</div>
      </div>
@@ -81,14 +82,14 @@ onMounted(() => firstInput.value?.focus())
 
      <button type="submit" class="btn btn-primary w-100" :disabled="auth.loading">
       <span v-if="auth.loading" class="spinner-border spinner-border-sm me-2" />
-      Establecer contraseña
+      {{ t('auth.btn_set') }}
      </button>
     </form>
 
     <!-- Verificar contraseña -->
     <form v-else @submit.prevent="submitVerify">
      <div class="mb-4">
-      <label class="form-label">Contraseña</label>
+      <label class="form-label">{{ t('auth.password_label') }}</label>
       <input
        ref="firstInput"
        v-model="password"
@@ -96,7 +97,7 @@ onMounted(() => firstInput.value?.focus())
        class="form-control"
        :class="{ 'is-invalid': passwordError }"
        autocomplete="current-password"
-       placeholder="Introduce tu contraseña"
+       :placeholder="t('auth.password_placeholder_current')"
       />
       <div v-if="passwordError" class="invalid-feedback">{{ passwordError }}</div>
      </div>
@@ -105,7 +106,7 @@ onMounted(() => firstInput.value?.focus())
 
      <button type="submit" class="btn btn-primary w-100" :disabled="auth.loading">
       <span v-if="auth.loading" class="spinner-border spinner-border-sm me-2" />
-      Entrar
+      {{ t('auth.btn_enter') }}
      </button>
     </form>
    </div>

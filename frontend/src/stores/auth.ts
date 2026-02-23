@@ -1,4 +1,7 @@
 import { GetAuthStatus, SetPassword, VerifyPassword } from '../../wailsjs/go/main/App'
+import { i18n } from '@/i18n/i18n'
+
+const t = i18n.global.t
 
 type AuthStatus = 'unauthenticated' | 'authenticated'
 
@@ -17,7 +20,7 @@ export const useAuthStore = defineStore('auth', () => {
       const result = await GetAuthStatus()
       passwordSet.value = result.isPasswordSet
     } catch (e) {
-      error.value = 'Error al conectar con la aplicación'
+      error.value = t('auth.error_connect')
     } finally {
       loading.value = false
     }
@@ -29,14 +32,14 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const res = await SetPassword(password)
       if (!res.success) {
-        error.value = res.error ?? 'Error al establecer la contraseña'
+        error.value = res.error ?? t('auth.error_set_password')
         return false
       }
       passwordSet.value = true
       status.value = 'authenticated'
       return true
     } catch (e: any) {
-      error.value = e?.message ?? 'Error al establecer la contraseña'
+      error.value = e?.message ?? t('auth.error_set_password')
       return false
     } finally {
       loading.value = false
@@ -49,13 +52,13 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const res = await VerifyPassword(password)
       if (!res.success) {
-        error.value = 'Contraseña incorrecta'
+        error.value = t('auth.error_wrong_password')
         return false
       }
       status.value = 'authenticated'
       return true
     } catch (e: any) {
-      error.value = e?.message ?? 'Error al verificar la contraseña'
+      error.value = e?.message ?? t('auth.error_verify_password')
       return false
     } finally {
       loading.value = false

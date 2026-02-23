@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { t } = useI18n()
+
 import { IconNotebook, IconNote, IconGripVertical, IconTrash } from '@tabler/icons-vue'
 import Sortable, { type SortableEvent } from 'sortablejs'
 import type { NavItem, NavLevel } from '@/stores/navigation'
@@ -110,7 +112,7 @@ watch(isSearching, v => {
  <div class="nav-panel h-100 d-flex flex-column overflow-hidden">
   <NavPanelHeader :level="level" @create="emit('create', $event)" @rename="emit('rename', level, $event)" />
   <div class="px-2 py-2 border-bottom flex-shrink-0">
-   <input v-model="searchQuery" type="search" class="form-control form-control-sm" placeholder="Buscar..." />
+   <input v-model="searchQuery" type="search" class="form-control form-control-sm" :placeholder="t('nav.search_placeholder')" />
   </div>
   <ul class="list-group list-group-flush overflow-y-auto flex-grow-1">
    <ul ref="notebooksEl" class="list-unstyled m-0">
@@ -172,8 +174,8 @@ watch(isSearching, v => {
     </li>
    </ul>
 
-   <li v-if="level.items.length === 0" class="list-group-item text-secondary small px-3 py-2">Vacío</li>
-   <li v-else-if="noResults" class="list-group-item text-secondary small px-3 py-2">Sin resultados</li>
+   <li v-if="level.items.length === 0" class="list-group-item text-secondary small px-3 py-2">{{ t('nav.empty') }}</li>
+   <li v-else-if="noResults" class="list-group-item text-secondary small px-3 py-2">{{ t('nav.no_results') }}</li>
   </ul>
  </div>
 </template>

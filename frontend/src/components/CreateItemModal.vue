@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { t } = useI18n()
+
 import { useForm, useField } from 'vee-validate'
 import type { NavLevel } from '@/stores/navigation'
 
@@ -15,7 +17,7 @@ const emit = defineEmits<{
 const { createNotebook, createNote } = useNavActions()
 
 const title = computed(() =>
-  props.kind === 'notebook' ? 'Nueva libreta' : 'Nueva nota'
+  props.kind === 'notebook' ? t('notebook.new_title') : t('note.new_title')
 )
 
 const { handleSubmit, resetForm } = useForm({
@@ -41,7 +43,7 @@ const onSubmit = handleSubmit(async () => {
     }
     close()
   } catch (e: any) {
-    error.value = e?.message ?? 'Error al crear'
+    error.value = e?.message ?? t('common.error_create')
   } finally {
     loading.value = false
   }
@@ -77,7 +79,7 @@ watch(() => props.visible, async (v) => {
             type="text"
             class="form-control"
             :class="{ 'is-invalid': errorMessage }"
-            placeholder="Nombre"
+            :placeholder="t('common.name_placeholder')"
             @keydown.enter.prevent="onSubmit"
           />
           <div v-if="errorMessage" class="invalid-feedback">{{ errorMessage }}</div>
@@ -85,9 +87,9 @@ watch(() => props.visible, async (v) => {
         <p v-if="error" class="text-danger small mt-2 mb-0">{{ error }}</p>
       </CModalBody>
       <CModalFooter>
-        <button type="button" class="btn btn-secondary btn-sm" @click="close">Cancelar</button>
+        <button type="button" class="btn btn-secondary btn-sm" @click="close">{{ t('common.cancel') }}</button>
         <button type="submit" class="btn btn-primary btn-sm" :disabled="loading">
-          {{ loading ? 'Creando…' : 'Crear' }}
+          {{ loading ? t('common.creating') : t('common.create') }}
         </button>
       </CModalFooter>
     </form>

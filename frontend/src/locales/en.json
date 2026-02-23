@@ -1,0 +1,63 @@
+{
+  "auth": {
+    "title_set": "Create password",
+    "title_verify": "Sign in to GVNotes",
+    "password_label": "Password",
+    "password_placeholder_new": "Minimum 8 characters",
+    "confirm_label": "Confirm password",
+    "confirm_placeholder": "Repeat the password",
+    "password_placeholder_current": "Enter your password",
+    "btn_set": "Set password",
+    "btn_enter": "Sign in",
+    "error_connect": "Error connecting to the application",
+    "error_set_password": "Error setting the password",
+    "error_wrong_password": "Incorrect password",
+    "error_verify_password": "Error verifying the password"
+  },
+  "validation": {
+    "required": "This field is required",
+    "min": "Minimum {min} characters",
+    "confirmed": "Passwords do not match"
+  },
+  "nav": {
+    "root_title": "Home",
+    "rename_hint": "Click to rename",
+    "new_note": "New note",
+    "new_notebook": "New notebook",
+    "search_placeholder": "Search...",
+    "empty": "Empty",
+    "no_results": "No results"
+  },
+  "notebook": {
+    "delete_title": "Delete notebook",
+    "delete_warning": "All notebooks and notes inside will also be deleted.",
+    "new_title": "New notebook"
+  },
+  "note": {
+    "delete_title": "Delete note",
+    "new_title": "New note",
+    "select_hint": "Select a note",
+    "loading": "Loading…",
+    "saving": "Saving…",
+    "characters": "characters",
+    "words": "words"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "create": "Create",
+    "creating": "Creating…",
+    "confirm_delete": "Delete",
+    "name_placeholder": "Name",
+    "error_create": "Error creating"
+  },
+  "link": {
+    "open": "Open link",
+    "edit": "Edit link",
+    "remove": "Remove link"
+  },
+  "color": {
+    "none": "No color"
+  }
+}

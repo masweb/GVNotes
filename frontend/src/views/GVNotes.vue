@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { t } = useI18n()
+
 import { Splitpanes, Pane } from 'splitpanes'
 import { IconArrowLeft, IconPower, IconSun, IconMoon } from '@tabler/icons-vue'
 import type { NavItem, NavLevel } from '@/stores/navigation'
@@ -157,7 +159,7 @@ const onRename = (level: NavLevel, newTitle: string) => {
   <!-- Contenido principal -->
   <pane :min-size="40">
    <div class="h-100 d-flex align-items-center justify-content-center" v-if="!nav.selectedNoteId">
-    <p class="text-secondary mb-0">Selecciona una nota</p>
+    <p class="text-secondary mb-0">{{ t('note.select_hint') }}</p>
    </div>
    <NoteEditor
     v-else

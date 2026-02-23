@@ -5,7 +5,8 @@ import Color from '@tiptap/extension-color'
 import Document from '@tiptap/extension-document'
 import Heading from '@tiptap/extension-heading'
 import History from '@tiptap/extension-history'
-import Image from '@tiptap/extension-image'
+import { LocalImage } from '../composables/useLocalImage'
+import { useImageServer } from '../composables/useImageServer'
 import Italic from '@tiptap/extension-italic'
 import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
@@ -122,7 +123,12 @@ const onDocClickColor = (e: MouseEvent) => {
  }
 }
 
-onMounted(() => document.addEventListener('click', onDocClickColor))
+const { init: initImageServer } = useImageServer()
+
+onMounted(async () => {
+ await initImageServer()
+ document.addEventListener('click', onDocClickColor)
+})
 onBeforeUnmount(() => document.removeEventListener('click', onDocClickColor))
 
 // Insertar imagen
@@ -161,7 +167,7 @@ const editor = new Editor({
   Document,
   Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
   History,
-  Image.configure({
+  LocalImage.configure({
    inline: false,
    allowBase64: false,
    resize: {

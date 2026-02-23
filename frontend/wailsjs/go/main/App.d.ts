@@ -18,6 +18,8 @@ export function GetImage(arg1:string):Promise<dto.ImageItem>;
 
 export function GetImagePath(arg1:string):Promise<string>;
 
+export function GetImageServerURL():Promise<string>;
+
 export function GetNote(arg1:string):Promise<dto.NoteDetail>;
 
 export function GetNotebook(arg1:string):Promise<dto.NotebookDetail>;

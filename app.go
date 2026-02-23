@@ -4,7 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"embed"
+	"fmt"
 	"log"
+	"net"
+	"net/http"
 
 	db "gvnotes/db/generated"
 	"gvnotes/internal/config"
@@ -19,12 +22,14 @@ var appMigrations embed.FS
 // App is the Wails application struct. It acts as a facade over internal
 // controllers, exposing methods to the frontend via Wails bindings.
 type App struct {
-	ctx      context.Context
-	sqlDB    *sql.DB
-	auth     *controllers.AuthController
-	notebook *controllers.NotebookController
-	note     *controllers.NoteController
-	image    *controllers.ImageController
+	ctx            context.Context
+	sqlDB          *sql.DB
+	auth           *controllers.AuthController
+	notebook       *controllers.NotebookController
+	note           *controllers.NoteController
+	image          *controllers.ImageController
+	imageListener  net.Listener
+	imageServerURL string
 }
 
 // NewApp creates a new App application struct.
@@ -53,13 +58,35 @@ func (a *App) startup(ctx context.Context) {
 	a.notebook = controllers.NewNotebookController(services.NewNotebookService(querier))
 	a.note = controllers.NewNoteController(services.NewNoteService(querier))
 	a.image = controllers.NewImageController(services.NewImageService(querier, imagesDir))
+
+	// Start a local HTTP server to serve image files. This is necessary because
+	// the Wails AssetServer Handler does not work in dev mode with Vite v5+.
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		log.Fatalf("failed to start image server: %v", err)
+	}
+	a.imageListener = ln
+	a.imageServerURL = fmt.Sprintf("http://127.0.0.1:%d", ln.Addr().(*net.TCPAddr).Port)
+	go func() {
+		if err := http.Serve(ln, &imageFileHandler{imagesDir: imagesDir}); err != nil && err != http.ErrServerClosed {
+			log.Printf("image server stopped: %v", err)
+		}
+	}()
 }
 
 // shutdown is called when the app closes.
 func (a *App) shutdown(_ context.Context) {
+	if a.imageListener != nil {
+		a.imageListener.Close()
+	}
 	if a.sqlDB != nil {
 		a.sqlDB.Close()
 	}
+}
+
+// GetImageServerURL returns the base URL of the local image HTTP server.
+func (a *App) GetImageServerURL() string {
+	return a.imageServerURL
 }
 
 // --- Auth ---

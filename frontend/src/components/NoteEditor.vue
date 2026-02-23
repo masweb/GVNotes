@@ -7,11 +7,14 @@ import Heading from '@tiptap/extension-heading'
 import History from '@tiptap/extension-history'
 import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
+import Link from '@tiptap/extension-link'
+import Underline from '@tiptap/extension-underline'
 import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
 import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import { TextStyle } from '@tiptap/extension-text-style'
+import { BubbleMenu } from '@tiptap/vue-3/menus'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import {
  IconAlignCenter,
@@ -21,6 +24,7 @@ import {
  IconArrowBackUp,
  IconArrowForwardUp,
  IconBold,
+ IconExternalLink,
  IconH1,
  IconH2,
  IconH3,
@@ -28,10 +32,14 @@ import {
  IconH5,
  IconH6,
  IconItalic,
+ IconLink,
+ IconLinkOff,
  IconPalette,
  IconPhoto,
- IconStrikethrough
+ IconStrikethrough,
+ IconUnderline
 } from '@tabler/icons-vue'
+import { BrowserOpenURL } from '../../wailsjs/runtime/runtime'
 import { GetNote, SaveImage, UpdateNoteContent, UpdateNoteTitle } from '../../wailsjs/go/main/App'
 import type { dto } from '../../wailsjs/go/models'
 
@@ -122,10 +130,71 @@ const onDocClickColor = (e: MouseEvent) => {
  }
 }
 
+// Link
+const linkOpen = ref(false)
+const linkInput = ref<HTMLInputElement | null>(null)
+const linkUrl = ref('')
+const linkBtn = ref<HTMLElement | null>(null)
+const linkPopover = ref<HTMLElement | null>(null)
+const linkMenuStyle = ref<Record<string, string>>({})
+let savedLinkRange: { from: number; to: number } | null = null
+
+const openLinkModal = () => {
+ const { from, to } = editor.state.selection
+ savedLinkRange = { from, to }
+ linkUrl.value = editor.getAttributes('link').href ?? ''
+ if (linkBtn.value) {
+  const rect = linkBtn.value.getBoundingClientRect()
+  linkMenuStyle.value = {
+   position: 'fixed',
+   top: `${rect.bottom + 4}px`,
+   left: `${rect.left}px`,
+   zIndex: '9999'
+  }
+ }
+ linkOpen.value = true
+ nextTick(() => {
+  linkInput.value?.focus()
+  linkInput.value?.select()
+ })
+}
+
+const applyLink = () => {
+ const url = linkUrl.value.trim()
+ if (!url || !savedLinkRange) return
+ const { from, to } = savedLinkRange
+ savedLinkRange = null
+ linkOpen.value = false
+ // Transacción atómica de ProseMirror: restaurar selección + aplicar mark
+ const { state, dispatch } = editor.view
+ const markType = state.schema.marks['link']
+ if (!markType) return
+ const { tr } = state
+ tr.addMark(from, to, markType.create({ href: url }))
+ dispatch(tr)
+ editor.commands.focus()
+}
+
+const removeLink = () => {
+ editor.chain().focus().unsetLink().run()
+}
+
+const openLinkHref = () => {
+ const href = editor.getAttributes('link').href
+ if (href) BrowserOpenURL(href)
+}
+
+const onDocClickLink = (e: MouseEvent) => {
+ const target = e.target as Node
+ if (linkBtn.value?.contains(target)) return
+ if (linkPopover.value?.contains(target)) return
+ linkOpen.value = false
+}
+
 onMounted(() => {
  document.addEventListener('click', onDocClickColor)
+ document.addEventListener('click', onDocClickLink)
 })
-onBeforeUnmount(() => document.removeEventListener('click', onDocClickColor))
 
 // Insertar imagen
 const insertImage = () => {
@@ -175,9 +244,11 @@ const editor = new Editor({
    },
   }),
   Italic,
+  Link.configure({ openOnClick: false }),
   Paragraph,
   Strike,
   Text,
+  Underline,
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
   TextStyle
  ],
@@ -219,6 +290,8 @@ watch(
 )
 
 onBeforeUnmount(() => {
+ document.removeEventListener('click', onDocClickColor)
+ document.removeEventListener('click', onDocClickLink)
  if (saveTimer.value) clearTimeout(saveTimer.value)
  editor.destroy()
 })
@@ -275,6 +348,14 @@ onBeforeUnmount(() => {
      @click="editor.chain().focus().toggleStrike().run()"
     >
      <IconStrikethrough :size="22" stroke-width="1" />
+    </button>
+    <button
+     type="button"
+     class="btn btn-sm"
+     :class="{ active: editor.isActive('underline') }"
+     @click="editor.chain().focus().toggleUnderline().run()"
+    >
+     <IconUnderline :size="22" stroke-width="1" />
     </button>
    </div>
 
@@ -366,6 +447,27 @@ onBeforeUnmount(() => {
     </button>
    </div>
 
+   <!-- Link -->
+   <div class="d-flex">
+    <button
+     ref="linkBtn"
+     type="button"
+     class="btn btn-sm"
+     :class="{ active: editor.isActive('link') }"
+     @click.stop="openLinkModal"
+    >
+     <IconLink :size="22" stroke-width="1" />
+    </button>
+    <button
+     type="button"
+     class="btn btn-sm"
+     :disabled="!editor.isActive('link')"
+     @click="removeLink"
+    >
+     <IconLinkOff :size="22" stroke-width="1" />
+    </button>
+   </div>
+
    <!-- Color -->
    <div class="d-flex">
     <button
@@ -385,6 +487,21 @@ onBeforeUnmount(() => {
      <IconPhoto :size="22" stroke-width="1" />
     </button>
    </div>
+   <Teleport to="body">
+    <div v-if="linkOpen" ref="linkPopover" :style="linkMenuStyle" class="link-modal border rounded shadow-sm bg-body p-2">
+     <form class="d-flex gap-1" @submit.prevent="applyLink">
+      <input
+       ref="linkInput"
+       v-model="linkUrl"
+       type="text"
+       class="form-control form-control-sm"
+       placeholder="https://..."
+       style="min-width: 220px"
+      />
+      <button type="submit" class="btn btn-sm btn-primary">OK</button>
+     </form>
+    </div>
+   </Teleport>
    <Teleport to="body">
     <div v-if="colorOpen" :style="colorMenuStyle" class="color-picker-menu border rounded shadow-sm bg-body p-2">
      <div class="d-flex flex-wrap gap-1" style="width: 134px">
@@ -438,6 +555,29 @@ onBeforeUnmount(() => {
   <div class="editor-content flex-grow-1 overflow-auto px-4 py-2" @click.self="editor.commands.focus()">
    <div v-if="loading" class="text-secondary small mt-3">Cargando…</div>
    <EditorContent v-else :editor="editor" />
+   <BubbleMenu
+    :editor="editor"
+    :should-show="() => editor.isActive('link')"
+    class="link-bubble border rounded shadow-sm bg-body px-2 py-1 d-flex align-items-center gap-2"
+   >
+    <span class="text-truncate small" style="max-width: 200px">{{ editor.getAttributes('link').href }}</span>
+    <a
+     :href="editor.getAttributes('link').href"
+     target="_blank"
+     rel="noopener noreferrer"
+     class="btn btn-sm p-0 text-primary"
+     title="Abrir enlace"
+     @click.prevent="openLinkHref"
+    >
+     <IconExternalLink :size="16" stroke-width="1.5" />
+    </a>
+    <button type="button" class="btn btn-sm p-0 text-secondary" title="Editar enlace" @click="openLinkModal">
+     <IconLink :size="16" stroke-width="1.5" />
+    </button>
+    <button type="button" class="btn btn-sm p-0 text-danger" title="Eliminar enlace" @click="removeLink">
+     <IconLinkOff :size="16" stroke-width="1.5" />
+    </button>
+   </BubbleMenu>
   </div>
 
   <!-- Footer -->
@@ -521,5 +661,9 @@ onBeforeUnmount(() => {
 
 .color-swatch:hover {
  transform: scale(1.15);
+}
+
+.link-bubble {
+ font-size: 0.8rem;
 }
 </style>

@@ -2,6 +2,8 @@
 const { t } = useI18n()
 
 import Bold from '@tiptap/extension-bold'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { common, createLowlight } from 'lowlight'
 import { Table } from '@tiptap/extension-table'
@@ -34,6 +36,7 @@ import {
  IconBold,
  IconCode,
  IconDownload,
+ IconListCheck,
  IconExternalLink,
  IconHeading,
  IconH1,
@@ -408,6 +411,8 @@ const editor = new Editor({
   TableCell,
   TableHeader,
   TableRow,
+  TaskList,
+  TaskItem.configure({ nested: true }),
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
   TextStyle
  ],
@@ -659,6 +664,19 @@ onBeforeUnmount(() => {
    <div class="d-flex">
     <button type="button" class="btn btn-sm" :disabled="!note" @click="insertImage">
      <IconPhoto :size="22" stroke-width="1" />
+    </button>
+   </div>
+
+   <!-- Task list -->
+   <div class="d-flex">
+    <button
+     type="button"
+     class="btn btn-sm"
+     :class="{ active: editor.isActive('taskList') }"
+     :disabled="!note"
+     @click="editor.chain().focus().toggleTaskList().run()"
+    >
+     <IconListCheck :size="22" stroke-width="1" />
     </button>
    </div>
 

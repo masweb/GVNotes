@@ -106,6 +106,82 @@ html,
  }
 }
 
+// ── Image resize / selection feedback ──────────────────────────────────────
+
+// Imagen: sin espacio extra debajo (line-height gap)
+.ProseMirror [data-resize-container] img {
+ vertical-align: bottom;
+}
+
+// Imagen seleccionada: borde de selección
+[data-resize-container].ProseMirror-selectednode [data-resize-wrapper] {
+ outline: 2px solid $primary;
+ outline-offset: 1px;
+ border-radius: 2px;
+}
+
+[data-coreui-theme='dark'] {
+ [data-resize-container].ProseMirror-selectednode [data-resize-wrapper] {
+  outline-color: $primary-dark;
+ }
+}
+
+// Handles de redimensión: puntos visibles en las esquinas/bordes
+[data-resize-handle] {
+ width: 10px;
+ height: 10px;
+ background: $primary;
+ border: 2px solid #fff;
+ border-radius: 50%;
+ opacity: 0;
+ transition: opacity 0.15s;
+ z-index: 10;
+
+ // Desplazar el punto para que quede centrado sobre cada esquina/borde + cursor adecuado
+ &[data-resize-handle='bottom-right'] { transform: translate(50%, 50%);   cursor: nwse-resize; }
+ &[data-resize-handle='bottom-left']  { transform: translate(-50%, 50%);  cursor: nesw-resize; }
+ &[data-resize-handle='top-right']    { transform: translate(50%, -50%);  cursor: nesw-resize; }
+ &[data-resize-handle='top-left']     { transform: translate(-50%, -50%); cursor: nwse-resize; }
+ &[data-resize-handle='bottom']       { margin: auto; bottom: 0; top: auto; cursor: ns-resize; }
+ &[data-resize-handle='top']          { margin: auto;                       cursor: ns-resize; }
+ &[data-resize-handle='right']        { right: 0; left: auto; transform: translate(50%, -50%); cursor: ew-resize; }
+ &[data-resize-handle='left']         { transform: translate(-50%, -50%);  cursor: ew-resize; }
+}
+
+// Mostrar handles solo cuando la imagen está seleccionada
+[data-resize-container].ProseMirror-selectednode [data-resize-handle] {
+ opacity: 1;
+}
+
+[data-coreui-theme='dark'] {
+ [data-resize-handle] {
+  background: $primary-dark;
+  border-color: #1a1a2e;
+ }
+}
+
+// Durante el resize: borde más marcado
+[data-resize-container][data-resize-state='true'] [data-resize-wrapper] {
+ outline: 2px dashed $primary;
+ outline-offset: 1px;
+}
+
+[data-coreui-theme='dark'] {
+ [data-resize-container][data-resize-state='true'] [data-resize-wrapper] {
+  outline-color: $primary-dark;
+ }
+}
+
+// Drag de imagen (ProseMirror marca el nodo arrastrado con .ProseMirror-selectednode
+// y oculta el original; el fallback de sortable muestra la imagen con opacidad)
+.ProseMirror img {
+ max-width: 100%;
+ height: auto;
+ display: block;
+}
+
+// ── Editor toolbar ──────────────────────────────────────────────────────────
+
 .editor-toolbar {
  --wails-draggable: drag;
  height: 48px;

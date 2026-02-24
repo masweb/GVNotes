@@ -8,7 +8,14 @@ import type { NavItem, NavLevel } from '@/stores/navigation'
 const nav = useNavigationStore()
 const { currentTheme } = useTheme()
 
-onMounted(() => nav.init())
+onMounted(() => {
+ nav.init()
+ document.addEventListener('keydown', onKeydown)
+})
+
+onBeforeUnmount(() => {
+ document.removeEventListener('keydown', onKeydown)
+})
 
 const onNotebookClickLeft = (item: NavItem & { kind: 'notebook' }) => {
  nav.openNotebookFromLeft(item.data)
@@ -74,6 +81,29 @@ const onRename = (level: NavLevel, newTitle: string) => {
 
 // Modal de configuración
 const settingsVisible = ref(false)
+
+// Atajos de teclado globales
+let nTimer: ReturnType<typeof setTimeout> | null = null
+const onKeydown = (e: KeyboardEvent) => {
+ if (!e.metaKey) return
+ if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+ if (modalVisible.value || deleteModalVisible.value || settingsVisible.value) return
+ const activeLevel = nav.rightPanel ?? nav.leftPanel
+ if (!activeLevel) return
+ if (e.key === 'n') {
+  e.preventDefault()
+  if (nTimer) {
+   clearTimeout(nTimer)
+   nTimer = null
+   onCreate(activeLevel, 'notebook')
+  } else {
+   nTimer = setTimeout(() => {
+    nTimer = null
+    onCreate(activeLevel, 'note')
+   }, 300)
+  }
+ }
+}
 </script>
 
 <template>
@@ -91,7 +121,12 @@ const settingsVisible = ref(false)
     </div>
     <!-- Piso 2: controles de navegación -->
     <div class="d-flex align-items-center px-2 gap-1" style="height: 42px">
-     <button class="btn border-0 d-flex align-items-center p-1" tabindex="-1" :disabled="!nav.canGoBack" @click="nav.goBack()">
+     <button
+      class="btn border-0 d-flex align-items-center p-1"
+      tabindex="-1"
+      :disabled="!nav.canGoBack"
+      @click="nav.goBack()"
+     >
       <IconArrowLeft :size="22" stroke-width="1" />
      </button>
      <div class="ms-auto d-flex align-items-center gap-1">
@@ -151,8 +186,11 @@ const settingsVisible = ref(false)
 
   <!-- Contenido principal -->
   <pane :min-size="40">
-   <div class="h-100 d-flex align-items-center justify-content-center" v-if="!nav.selectedNoteId">
-    <p class="text-secondary mb-0">{{ t('note.select_hint') }}</p>
+   <div class="h-100 d-flex flex-column align-items-center justify-content-center gap-2" v-if="!nav.selectedNoteId">
+    <p class="text-secondary mb-2">{{ t('note.select_hint') }}</p>
+    <p class="text-secondary mb-0" style="font-size: 1em; opacity: 0.7">
+     <kbd>⌘N</kbd> {{ t('nav.new_note') }} &nbsp;·&nbsp; <kbd>⌘NN</kbd> {{ t('nav.new_notebook') }}
+    </p>
    </div>
    <NoteEditor
     v-else

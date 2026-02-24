@@ -2,6 +2,10 @@
 const { t } = useI18n()
 
 import Bold from '@tiptap/extension-bold'
+import { Table } from '@tiptap/extension-table'
+import { TableCell } from '@tiptap/extension-table-cell'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { TableRow } from '@tiptap/extension-table-row'
 import CharacterCount from '@tiptap/extension-character-count'
 import Color from '@tiptap/extension-color'
 import Document from '@tiptap/extension-document'
@@ -41,6 +45,13 @@ import {
  IconPalette,
  IconPhoto,
  IconStrikethrough,
+ IconTable,
+ IconTablePlus,
+ IconTableMinus,
+ IconColumnInsertRight,
+ IconColumnRemove,
+ IconRowInsertBottom,
+ IconRowRemove,
  IconUnderline
 } from '@tabler/icons-vue'
 import { BrowserOpenURL } from '../../wailsjs/runtime/runtime'
@@ -104,6 +115,30 @@ const pickHeading = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
 const onDocClickHeading = (e: MouseEvent) => {
  if (headingBtn.value && !headingBtn.value.contains(e.target as Node)) {
   headingOpen.value = false
+ }
+}
+
+// Table dropdown
+const tableOpen = ref(false)
+const tableBtn = ref<HTMLElement | null>(null)
+const tableMenuStyle = ref<Record<string, string>>({})
+
+const toggleTableDropdown = () => {
+ if (!tableOpen.value && tableBtn.value) {
+  const rect = tableBtn.value.getBoundingClientRect()
+  tableMenuStyle.value = {
+   position: 'fixed',
+   top: `${rect.bottom + 4}px`,
+   left: `${rect.left}px`,
+   zIndex: '9999'
+  }
+ }
+ tableOpen.value = !tableOpen.value
+}
+
+const onDocClickTable = (e: MouseEvent) => {
+ if (tableBtn.value && !tableBtn.value.contains(e.target as Node)) {
+  tableOpen.value = false
  }
 }
 
@@ -233,6 +268,7 @@ onMounted(() => {
  document.addEventListener('click', onDocClickColor)
  document.addEventListener('click', onDocClickLink)
  document.addEventListener('click', onDocClickHeading)
+ document.addEventListener('click', onDocClickTable)
  editorContentEl.value?.addEventListener('scroll', onEditorScroll)
 
  resizeObserver = new MutationObserver(mutations => {
@@ -326,6 +362,10 @@ const editor = new Editor({
   Strike,
   Text,
   Underline,
+  Table.configure({ resizable: true }),
+  TableCell,
+  TableHeader,
+  TableRow,
   TextAlign.configure({ types: ['heading', 'paragraph'] }),
   TextStyle
  ],
@@ -374,6 +414,7 @@ onBeforeUnmount(() => {
  document.removeEventListener('click', onDocClickColor)
  document.removeEventListener('click', onDocClickLink)
  document.removeEventListener('click', onDocClickHeading)
+ document.removeEventListener('click', onDocClickTable)
  editorContentEl.value?.removeEventListener('scroll', onEditorScroll)
  resizeObserver?.disconnect()
  if (saveTimer.value) clearTimeout(saveTimer.value)
@@ -577,6 +618,44 @@ onBeforeUnmount(() => {
      <IconPhoto :size="22" stroke-width="1" />
     </button>
    </div>
+
+   <!-- Tabla -->
+   <div class="d-flex">
+    <button
+     ref="tableBtn"
+     type="button"
+     class="btn btn-sm"
+     :class="{ active: editor.isActive('table') }"
+     :disabled="!note"
+     @click.stop="toggleTableDropdown"
+    >
+     <IconTable :size="22" stroke-width="1" /><span style="font-size: 9px; line-height: 1; margin-left: 1px;">▾</span>
+    </button>
+   </div>
+   <Teleport to="body">
+    <div v-if="tableOpen" :style="tableMenuStyle" class="table-dropdown border rounded shadow-sm bg-body p-1" style="min-width: 180px">
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); tableOpen = false">
+      <IconTablePlus :size="18" stroke-width="1" /> {{ t('table.insert') }}
+     </button>
+     <hr class="my-1" />
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" :disabled="!editor.isActive('table')" @click="editor.chain().focus().addColumnAfter().run(); tableOpen = false">
+      <IconColumnInsertRight :size="18" stroke-width="1" /> {{ t('table.add_col') }}
+     </button>
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" :disabled="!editor.isActive('table')" @click="editor.chain().focus().deleteColumn().run(); tableOpen = false">
+      <IconColumnRemove :size="18" stroke-width="1" /> {{ t('table.del_col') }}
+     </button>
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" :disabled="!editor.isActive('table')" @click="editor.chain().focus().addRowAfter().run(); tableOpen = false">
+      <IconRowInsertBottom :size="18" stroke-width="1" /> {{ t('table.add_row') }}
+     </button>
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2" :disabled="!editor.isActive('table')" @click="editor.chain().focus().deleteRow().run(); tableOpen = false">
+      <IconRowRemove :size="18" stroke-width="1" /> {{ t('table.del_row') }}
+     </button>
+     <hr class="my-1" />
+     <button type="button" class="btn btn-sm w-100 text-start d-flex align-items-center gap-2 text-danger" :disabled="!editor.isActive('table')" @click="editor.chain().focus().deleteTable().run(); tableOpen = false">
+      <IconTableMinus :size="18" stroke-width="1" /> {{ t('table.delete') }}
+     </button>
+    </div>
+   </Teleport>
    <Teleport to="body">
     <div
      v-if="linkOpen"

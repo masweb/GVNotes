@@ -64,6 +64,14 @@
  "color": {
   "none": "No color"
  },
+ "table": {
+  "insert": "Insert table",
+  "add_col": "Add column",
+  "del_col": "Delete column",
+  "add_row": "Add row",
+  "del_row": "Delete row",
+  "delete": "Delete table"
+ },
  "settings": {
   "title": "Settings",
   "theme": "Theme",

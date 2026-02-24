@@ -30,6 +30,10 @@ export function ListNotebooks(arg1:string):Promise<Array<dto.NotebookListItem>>;
 
 export function ListNotes(arg1:string):Promise<Array<dto.NoteListItem>>;
 
+export function MoveNote(arg1:string,arg2:dto.MoveNoteRequest):Promise<dto.NoteDetail>;
+
+export function MoveNotebook(arg1:string,arg2:dto.MoveNotebookRequest):Promise<dto.NotebookDetail>;
+
 export function SaveImage(arg1:string,arg2:string,arg3:Array<number>):Promise<dto.ImageItem>;
 
 export function SetPassword(arg1:string):Promise<any>;

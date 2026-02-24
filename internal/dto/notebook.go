@@ -33,3 +33,7 @@ type UpdateNotebookTitleRequest struct {
 type UpdatePositionRequest struct {
 	Position int64 `json:"position"`
 }
+
+type MoveNotebookRequest struct {
+	ParentID *string `json:"parentId"`
+}

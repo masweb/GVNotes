@@ -21,6 +21,7 @@ type NoteService interface {
 	UpdateContent(ctx context.Context, id string, req dto.UpdateNoteContentRequest) (dto.NoteDetail, error)
 	UpdatePosition(ctx context.Context, id string, req dto.UpdatePositionRequest) error
 	Delete(ctx context.Context, id string) error
+	Move(ctx context.Context, id string, req dto.MoveNoteRequest) (dto.NoteDetail, error)
 }
 
 type noteService struct {
@@ -127,6 +128,31 @@ func (s *noteService) UpdatePosition(ctx context.Context, id string, req dto.Upd
 
 func (s *noteService) Delete(ctx context.Context, id string) error {
 	return s.q.DeleteNote(ctx, id)
+}
+
+func (s *noteService) Move(ctx context.Context, id string, req dto.MoveNoteRequest) (dto.NoteDetail, error) {
+	existing, err := s.q.ListNotes(ctx, req.NotebookID)
+	if err != nil {
+		return dto.NoteDetail{}, err
+	}
+	var maxPos int64
+	for _, e := range existing {
+		if e.Position > maxPos {
+			maxPos = e.Position
+		}
+	}
+	n, err := s.q.MoveNote(ctx, db.MoveNoteParams{
+		NotebookID: req.NotebookID,
+		Position:   maxPos + 1000,
+		ID:         id,
+	})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return dto.NoteDetail{}, fmt.Errorf("%w: note %s", apperrors.ErrNotFound, id)
+		}
+		return dto.NoteDetail{}, err
+	}
+	return toNoteDetail(n), nil
 }
 
 func toNoteDetail(n db.Note) dto.NoteDetail {

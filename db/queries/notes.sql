@@ -33,3 +33,11 @@ WHERE id = ?;
 
 -- name: DeleteNote :exec
 DELETE FROM notes WHERE id = ?;
+
+-- name: MoveNote :one
+UPDATE notes
+SET notebook_id = ?,
+    position    = ?,
+    updated_at  = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+WHERE id = ?
+RETURNING id, notebook_id, title, content, position, created_at, updated_at;

@@ -79,6 +79,25 @@ const onRename = (level: NavLevel, newTitle: string) => {
  nav.renameNotebook(level.parentId, newTitle)
 }
 
+// Modal de mover
+const moveModalVisible = ref(false)
+const moveLevel = ref<NavLevel | null>(null)
+const moveTarget = ref<NavItem | null>(null)
+
+const onMove = (level: NavLevel, item: NavItem) => {
+ moveLevel.value = level
+ moveTarget.value = item
+ nextTick(() => {
+  moveModalVisible.value = true
+ })
+}
+
+const onMoveClose = () => {
+ moveModalVisible.value = false
+ moveTarget.value = null
+ moveLevel.value = null
+}
+
 // Modal de configuración
 const settingsVisible = ref(false)
 
@@ -87,7 +106,7 @@ let nTimer: ReturnType<typeof setTimeout> | null = null
 const onKeydown = (e: KeyboardEvent) => {
  if (!e.metaKey) return
  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
- if (modalVisible.value || deleteModalVisible.value || settingsVisible.value) return
+ if (modalVisible.value || deleteModalVisible.value || settingsVisible.value || moveModalVisible.value) return
  const activeLevel = nav.rightPanel ?? nav.leftPanel
  if (!activeLevel) return
  if (e.key === 'n') {
@@ -150,6 +169,7 @@ const onKeydown = (e: KeyboardEvent) => {
      @reorder="onReorder"
      @create="onCreate(nav.leftPanel, $event)"
      @delete="onDelete(nav.leftPanel, $event)"
+     @move="onMove(nav.leftPanel, $event)"
      @rename="onRename"
     />
    </template>
@@ -166,6 +186,7 @@ const onKeydown = (e: KeyboardEvent) => {
       @reorder="onReorder"
       @create="onCreate(nav.leftPanel!, $event)"
       @delete="onDelete(nav.leftPanel!, $event)"
+      @move="onMove(nav.leftPanel!, $event)"
       @rename="onRename"
      />
     </pane>
@@ -178,6 +199,7 @@ const onKeydown = (e: KeyboardEvent) => {
       @reorder="onReorder"
       @create="onCreate(nav.rightPanel!, $event)"
       @delete="onDelete(nav.rightPanel!, $event)"
+      @move="onMove(nav.rightPanel!, $event)"
       @rename="onRename"
      />
     </pane>
@@ -203,6 +225,13 @@ const onKeydown = (e: KeyboardEvent) => {
 
  <CreateItemModal v-model:visible="modalVisible" :kind="modalKind" :level="modalLevel" />
  <AppSettingsModal v-model:visible="settingsVisible" />
+ <MoveItemModal
+  v-if="moveTarget"
+  :visible="moveModalVisible"
+  :item="moveTarget"
+  :level="moveLevel"
+  @update:visible="onMoveClose"
+ />
 
  <DeleteConfirmModal
   v-if="deleteTarget"

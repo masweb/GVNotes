@@ -138,5 +138,21 @@ export const useNavigationStore = defineStore('navigation', () => {
     }
   }
 
-  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, selectNoteFromRoot, goBack, reorderItems, removeItem, renameItem, renameNotebook, reset }
+  const moveItem = (sourceLevelParentId: string | null, item: NavItem, destinationParentId: string | null) => {
+    // 1. Quitar del nivel origen
+    const src = stack.value.find(l => l.parentId === sourceLevelParentId)
+    if (src) src.items = src.items.filter(i => i.data.id !== item.data.id)
+
+    // 2. Insertar en destino si está cargado en el stack
+    const dst = stack.value.find(l => l.parentId === destinationParentId)
+    if (dst) dst.items = [...dst.items, item]
+
+    // 3. Si era un notebook abierto en el stack, colapsar a su nivel padre
+    if (item.kind === 'notebook') {
+      const openIdx = stack.value.findIndex(l => l.parentId === item.data.id)
+      if (openIdx !== -1) stack.value = stack.value.slice(0, openIdx)
+    }
+  }
+
+  return { stack, selectedNoteId, loading, leftPanel, rightPanel, canGoBack, activeNotebookId, init, openNotebook, openNotebookFromLeft, selectNote, selectNoteFromRoot, goBack, reorderItems, removeItem, renameItem, renameNotebook, reset, moveItem }
 })

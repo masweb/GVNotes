@@ -58,6 +58,14 @@ export function ListNotes(arg1) {
   return window['go']['main']['App']['ListNotes'](arg1);
 }
 
+export function MoveNote(arg1, arg2) {
+  return window['go']['main']['App']['MoveNote'](arg1, arg2);
+}
+
+export function MoveNotebook(arg1, arg2) {
+  return window['go']['main']['App']['MoveNotebook'](arg1, arg2);
+}
+
 export function SaveImage(arg1, arg2, arg3) {
   return window['go']['main']['App']['SaveImage'](arg1, arg2, arg3);
 }

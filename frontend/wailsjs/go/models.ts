@@ -67,6 +67,30 @@ export namespace dto {
 		    return a;
 		}
 	}
+	export class MoveNoteRequest {
+	    notebookId?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MoveNoteRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.notebookId = source["notebookId"];
+	    }
+	}
+	export class MoveNotebookRequest {
+	    parentId?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new MoveNotebookRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.parentId = source["parentId"];
+	    }
+	}
 	export class NoteDetail {
 	    id: string;
 	    notebookId?: string;

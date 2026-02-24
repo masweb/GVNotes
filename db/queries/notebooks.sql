@@ -27,3 +27,11 @@ WHERE id = ?;
 
 -- name: DeleteNotebook :exec
 DELETE FROM notebooks WHERE id = ?;
+
+-- name: MoveNotebook :one
+UPDATE notebooks
+SET parent_id  = ?,
+    position   = ?,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+WHERE id = ?
+RETURNING id, parent_id, title, position, created_at, updated_at;

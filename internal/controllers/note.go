@@ -50,6 +50,10 @@ func (c *NoteController) DeleteNote(id string) error {
 	return c.svc.Delete(context.Background(), id)
 }
 
+func (c *NoteController) MoveNote(id string, req dto.MoveNoteRequest) (dto.NoteDetail, error) {
+	return c.svc.Move(context.Background(), id, req)
+}
+
 func noteFriendlyError(err error) string {
 	switch {
 	case errors.Is(err, apperrors.ErrNotFound):

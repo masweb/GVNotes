@@ -50,10 +50,10 @@ html,
   cursor: grab;
  }
 
- .item-delete-btn {
+ .item-action-btn {
   opacity: 0;
 
-  &.item-delete-btn--visible {
+  &.item-action-btn--visible {
    opacity: 1;
   }
  }
@@ -61,6 +61,10 @@ html,
 
 .drag-ghost {
  opacity: 0.4;
+}
+
+.tree-node-selectable:hover {
+ background-color: var(--cui-tertiary-bg);
 }
 
 .drag-fallback {

@@ -119,6 +119,36 @@ func (q *Queries) ListNotes(ctx context.Context, notebookID *string) ([]ListNote
 	return items, nil
 }
 
+const moveNote = `-- name: MoveNote :one
+UPDATE notes
+SET notebook_id = ?,
+    position    = ?,
+    updated_at  = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+WHERE id = ?
+RETURNING id, notebook_id, title, content, position, created_at, updated_at
+`
+
+type MoveNoteParams struct {
+	NotebookID *string `db:"notebook_id" json:"notebook_id"`
+	Position   int64   `db:"position" json:"position"`
+	ID         string  `db:"id" json:"id"`
+}
+
+func (q *Queries) MoveNote(ctx context.Context, arg MoveNoteParams) (Note, error) {
+	row := q.db.QueryRowContext(ctx, moveNote, arg.NotebookID, arg.Position, arg.ID)
+	var i Note
+	err := row.Scan(
+		&i.ID,
+		&i.NotebookID,
+		&i.Title,
+		&i.Content,
+		&i.Position,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updateNoteContent = `-- name: UpdateNoteContent :one
 UPDATE notes
 SET content = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')

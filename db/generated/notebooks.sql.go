@@ -115,6 +115,35 @@ func (q *Queries) ListNotebooks(ctx context.Context, parentID *string) ([]ListNo
 	return items, nil
 }
 
+const moveNotebook = `-- name: MoveNotebook :one
+UPDATE notebooks
+SET parent_id  = ?,
+    position   = ?,
+    updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+WHERE id = ?
+RETURNING id, parent_id, title, position, created_at, updated_at
+`
+
+type MoveNotebookParams struct {
+	ParentID *string `db:"parent_id" json:"parent_id"`
+	Position int64   `db:"position" json:"position"`
+	ID       string  `db:"id" json:"id"`
+}
+
+func (q *Queries) MoveNotebook(ctx context.Context, arg MoveNotebookParams) (Notebook, error) {
+	row := q.db.QueryRowContext(ctx, moveNotebook, arg.ParentID, arg.Position, arg.ID)
+	var i Notebook
+	err := row.Scan(
+		&i.ID,
+		&i.ParentID,
+		&i.Title,
+		&i.Position,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const updateNotebookPosition = `-- name: UpdateNotebookPosition :exec
 UPDATE notebooks
 SET position = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')

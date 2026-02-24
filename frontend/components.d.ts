@@ -16,8 +16,10 @@ declare module 'vue' {
     CreateItemModal: typeof import('./src/components/CreateItemModal.vue')['default']
     DeleteConfirmModal: typeof import('./src/components/DeleteConfirmModal.vue')['default']
     GVNotes: typeof import('./src/views/GVNotes.vue')['default']
+    MoveItemModal: typeof import('./src/components/MoveItemModal.vue')['default']
     NavPanel: typeof import('./src/components/NavPanel.vue')['default']
     NavPanelHeader: typeof import('./src/components/NavPanelHeader.vue')['default']
+    NotebookTreeNode: typeof import('./src/components/NotebookTreeNode.vue')['default']
     NoteEditor: typeof import('./src/components/NoteEditor.vue')['default']
   }
 }

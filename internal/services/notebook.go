@@ -20,6 +20,7 @@ type NotebookService interface {
 	UpdateTitle(ctx context.Context, id string, req dto.UpdateNotebookTitleRequest) (dto.NotebookDetail, error)
 	UpdatePosition(ctx context.Context, id string, req dto.UpdatePositionRequest) error
 	Delete(ctx context.Context, id string) error
+	Move(ctx context.Context, id string, req dto.MoveNotebookRequest) (dto.NotebookDetail, error)
 }
 
 type notebookService struct {
@@ -112,6 +113,34 @@ func (s *notebookService) UpdatePosition(ctx context.Context, id string, req dto
 
 func (s *notebookService) Delete(ctx context.Context, id string) error {
 	return s.q.DeleteNotebook(ctx, id)
+}
+
+func (s *notebookService) Move(ctx context.Context, id string, req dto.MoveNotebookRequest) (dto.NotebookDetail, error) {
+	if req.ParentID != nil && *req.ParentID == id {
+		return dto.NotebookDetail{}, fmt.Errorf("%w: cannot move notebook into itself", apperrors.ErrInvalidInput)
+	}
+	existing, err := s.q.ListNotebooks(ctx, req.ParentID)
+	if err != nil {
+		return dto.NotebookDetail{}, err
+	}
+	var maxPos int64
+	for _, nb := range existing {
+		if nb.Position > maxPos {
+			maxPos = nb.Position
+		}
+	}
+	n, err := s.q.MoveNotebook(ctx, db.MoveNotebookParams{
+		ParentID: req.ParentID,
+		Position: maxPos + 1000,
+		ID:       id,
+	})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return dto.NotebookDetail{}, fmt.Errorf("%w: notebook %s", apperrors.ErrNotFound, id)
+		}
+		return dto.NotebookDetail{}, err
+	}
+	return toNotebookDetail(n), nil
 }
 
 func toNotebookDetail(n db.Notebook) dto.NotebookDetail {

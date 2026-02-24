@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { t } = useI18n()
 
-import { IconNotebook, IconNote, IconGripVertical, IconTrash } from '@tabler/icons-vue'
+import { IconNotebook, IconNote, IconGripVertical, IconTrash, IconArrowsMove } from '@tabler/icons-vue'
 import Sortable, { type SortableEvent } from 'sortablejs'
 import type { NavItem, NavLevel } from '@/stores/navigation'
 
@@ -17,6 +17,7 @@ const emit = defineEmits<{
  reorder: [level: NavLevel, kind: 'notebook' | 'note', newItems: NavItem[]]
  create: [kind: 'notebook' | 'note']
  delete: [item: NavItem]
+ move: [item: NavItem]
  rename: [level: NavLevel, newTitle: string]
 }>()
 
@@ -140,12 +141,20 @@ watch(isSearching, v => {
      <IconNotebook :size="22" stroke-width="1" class="flex-shrink-0" />
      <span class="text-truncate flex-grow-1">{{ item.data.title }}</span>
      <button
-      class="btn btn-sm p-0 item-delete-btn flex-shrink-0 text-danger"
-      :class="{ 'item-delete-btn--visible': hoveredId === item.data.id }"
+      class="btn btn-sm p-0 item-action-btn flex-shrink-0"
+      :class="{ 'item-action-btn--visible': hoveredId === item.data.id }"
+      type="button"
+      @click.stop="emit('move', item)"
+     >
+      <IconArrowsMove :size="18" stroke-width="1" />
+     </button>
+     <button
+      class="btn btn-sm p-0 item-action-btn flex-shrink-0 text-danger"
+      :class="{ 'item-action-btn--visible': hoveredId === item.data.id }"
       type="button"
       @click.stop="emit('delete', item)"
      >
-      <IconTrash :size="22" stroke-width="1" />
+      <IconTrash :size="18" stroke-width="1" />
      </button>
     </li>
    </ul>
@@ -169,12 +178,20 @@ watch(isSearching, v => {
      <IconNote :size="22" stroke-width="1" class="flex-shrink-0" />
      <span class="text-truncate flex-grow-1">{{ item.data.title }}</span>
      <button
-      class="btn btn-sm p-0 item-delete-btn flex-shrink-0 text-danger"
-      :class="{ 'item-delete-btn--visible': hoveredId === item.data.id }"
+      class="btn btn-sm p-0 item-action-btn flex-shrink-0"
+      :class="{ 'item-action-btn--visible': hoveredId === item.data.id }"
+      type="button"
+      @click.stop="emit('move', item)"
+     >
+      <IconArrowsMove :size="18" stroke-width="1" />
+     </button>
+     <button
+      class="btn btn-sm p-0 item-action-btn flex-shrink-0 text-danger"
+      :class="{ 'item-action-btn--visible': hoveredId === item.data.id }"
       type="button"
       @click.stop="emit('delete', item)"
      >
-      <IconTrash :size="22" stroke-width="1" />
+      <IconTrash :size="18" stroke-width="1" />
      </button>
     </li>
    </ul>

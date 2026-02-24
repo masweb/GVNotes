@@ -23,6 +23,8 @@ type Querier interface {
 	ListImagesByNote(ctx context.Context, noteID string) ([]Image, error)
 	ListNotebooks(ctx context.Context, parentID *string) ([]ListNotebooksRow, error)
 	ListNotes(ctx context.Context, notebookID *string) ([]ListNotesRow, error)
+	MoveNote(ctx context.Context, arg MoveNoteParams) (Note, error)
+	MoveNotebook(ctx context.Context, arg MoveNotebookParams) (Notebook, error)
 	UpdateNoteContent(ctx context.Context, arg UpdateNoteContentParams) (Note, error)
 	UpdateNotePosition(ctx context.Context, arg UpdateNotePositionParams) error
 	UpdateNoteTitle(ctx context.Context, arg UpdateNoteTitleParams) (Note, error)

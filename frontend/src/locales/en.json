@@ -72,6 +72,16 @@
   "del_row": "Delete row",
   "delete": "Delete table"
  },
+ "move": {
+  "title_notebook": "Move notebook",
+  "title_note": "Move note",
+  "btn": "Move here",
+  "moving": "Moving…",
+  "select_destination": "Select destination for",
+  "root": "Home (root)",
+  "error": "Error moving item",
+  "same_location": "Item is already in this location"
+ },
  "settings": {
   "title": "Settings",
   "theme": "Theme",

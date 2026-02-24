@@ -34,3 +34,7 @@ type UpdateNoteTitleRequest struct {
 type UpdateNoteContentRequest struct {
 	Content string `json:"content"`
 }
+
+type MoveNoteRequest struct {
+	NotebookID *string `json:"notebookId"`
+}

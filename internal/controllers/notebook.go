@@ -46,6 +46,10 @@ func (c *NotebookController) DeleteNotebook(id string) error {
 	return c.svc.Delete(context.Background(), id)
 }
 
+func (c *NotebookController) MoveNotebook(id string, req dto.MoveNotebookRequest) (dto.NotebookDetail, error) {
+	return c.svc.Move(context.Background(), id, req)
+}
+
 func notebookFriendlyError(err error) string {
 	switch {
 	case errors.Is(err, apperrors.ErrNotFound):

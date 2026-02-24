@@ -118,6 +118,10 @@ func (a *App) DeleteNotebook(id string) error {
 	return a.notebook.DeleteNotebook(id)
 }
 
+func (a *App) MoveNotebook(id string, req dto.MoveNotebookRequest) (dto.NotebookDetail, error) {
+	return a.notebook.MoveNotebook(id, req)
+}
+
 // --- Notes ---
 
 func (a *App) ListNotes(notebookID string) ([]dto.NoteListItem, error) {
@@ -146,6 +150,10 @@ func (a *App) UpdateNotePosition(id string, req dto.UpdatePositionRequest) error
 
 func (a *App) DeleteNote(id string) error {
 	return a.note.DeleteNote(id)
+}
+
+func (a *App) MoveNote(id string, req dto.MoveNoteRequest) (dto.NoteDetail, error) {
+	return a.note.MoveNote(id, req)
 }
 
 // --- Images ---

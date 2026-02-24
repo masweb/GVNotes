@@ -41,6 +41,8 @@
     "@tiptap/extension-text-style": "^3.20.0",
     "@tiptap/extension-underline": "^3.20.0",
     "@tiptap/vue-3": "^3.20.0",
+    "highlight.js": "^11.11.1",
+    "lowlight": "^3.3.0",
     "pinia": "^3.0.4",
     "sortablejs": "^1.15.7",
     "splitpanes": "^4.0.4",

@@ -2,6 +2,8 @@
 const { t } = useI18n()
 
 import Bold from '@tiptap/extension-bold'
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
+import { common, createLowlight } from 'lowlight'
 import { Table } from '@tiptap/extension-table'
 import { TableCell } from '@tiptap/extension-table-cell'
 import { TableHeader } from '@tiptap/extension-table-header'
@@ -30,6 +32,7 @@ import {
  IconArrowBackUp,
  IconArrowForwardUp,
  IconBold,
+ IconCode,
  IconDownload,
  IconExternalLink,
  IconHeading,
@@ -140,6 +143,43 @@ const onDocClickTable = (e: MouseEvent) => {
  if (tableBtn.value && !tableBtn.value.contains(e.target as Node)) {
   tableOpen.value = false
  }
+}
+
+// Code block dropdown
+const CODE_LANGUAGES = [
+ { label: 'JavaScript', value: 'javascript' },
+ { label: 'TypeScript', value: 'typescript' },
+ { label: 'CSS', value: 'css' },
+ { label: 'SCSS', value: 'scss' },
+ { label: 'PHP', value: 'php' },
+ { label: 'Go', value: 'go' },
+ { label: 'Python', value: 'python' },
+ { label: 'YAML', value: 'yaml' },
+ { label: 'JSON', value: 'json' },
+ { label: 'HTML', value: 'html' },
+ { label: 'Bash', value: 'bash' },
+ { label: 'SQL', value: 'sql' },
+ { label: 'Rust', value: 'rust' },
+]
+const codeOpen = ref(false)
+const codeBtn = ref<HTMLElement | null>(null)
+const codeMenuStyle = ref<Record<string, string>>({})
+
+const toggleCodeDropdown = () => {
+ if (!codeOpen.value && codeBtn.value) {
+  const rect = codeBtn.value.getBoundingClientRect()
+  codeMenuStyle.value = { position: 'fixed', top: `${rect.bottom + 4}px`, left: `${rect.left}px`, zIndex: '9999' }
+ }
+ codeOpen.value = !codeOpen.value
+}
+
+const onDocClickCode = (e: MouseEvent) => {
+ if (codeBtn.value && !codeBtn.value.contains(e.target as Node)) codeOpen.value = false
+}
+
+const pickCodeLang = (lang: string) => {
+ editor.chain().focus().setCodeBlock({ language: lang }).run()
+ codeOpen.value = false
 }
 
 const colorOpen = ref(false)
@@ -269,6 +309,7 @@ onMounted(() => {
  document.addEventListener('click', onDocClickLink)
  document.addEventListener('click', onDocClickHeading)
  document.addEventListener('click', onDocClickTable)
+ document.addEventListener('click', onDocClickCode)
  editorContentEl.value?.addEventListener('scroll', onEditorScroll)
 
  resizeObserver = new MutationObserver(mutations => {
@@ -356,6 +397,7 @@ const editor = new Editor({
     alwaysPreserveAspectRatio: true
    }
   }),
+  CodeBlockLowlight.configure({ lowlight: createLowlight(common) }),
   Italic,
   Link.configure({ openOnClick: false }),
   Paragraph,
@@ -415,6 +457,7 @@ onBeforeUnmount(() => {
  document.removeEventListener('click', onDocClickLink)
  document.removeEventListener('click', onDocClickHeading)
  document.removeEventListener('click', onDocClickTable)
+ document.removeEventListener('click', onDocClickCode)
  editorContentEl.value?.removeEventListener('scroll', onEditorScroll)
  resizeObserver?.disconnect()
  if (saveTimer.value) clearTimeout(saveTimer.value)
@@ -618,6 +661,32 @@ onBeforeUnmount(() => {
      <IconPhoto :size="22" stroke-width="1" />
     </button>
    </div>
+
+   <!-- Code block -->
+   <div class="d-flex">
+    <button
+     ref="codeBtn"
+     type="button"
+     class="btn btn-sm"
+     :class="{ active: editor.isActive('codeBlock') }"
+     :disabled="!note"
+     @click.stop="toggleCodeDropdown"
+    >
+     <IconCode :size="22" stroke-width="1" /><span style="font-size: 9px; line-height: 1; margin-left: 1px;">▾</span>
+    </button>
+   </div>
+   <Teleport to="body">
+    <div v-if="codeOpen" :style="codeMenuStyle" class="code-lang-dropdown border rounded shadow-sm bg-body p-1" style="min-width: 150px; max-height: 300px; overflow-y: auto">
+     <button
+      v-for="lang in CODE_LANGUAGES"
+      :key="lang.value"
+      type="button"
+      class="btn btn-sm w-100 text-start"
+      :class="{ active: editor.isActive('codeBlock', { language: lang.value }) }"
+      @click="pickCodeLang(lang.value)"
+     >{{ lang.label }}</button>
+    </div>
+   </Teleport>
 
    <!-- Tabla -->
    <div class="d-flex">

@@ -313,6 +313,7 @@ const loadNote = async (id: string) => {
  try {
   note.value = await GetNote(id)
   editor.commands.setContent(note.value.content ? JSON.parse(note.value.content) : '')
+  nextTick(() => { editor.commands.focus() })
  } finally {
   loading.value = false
  }

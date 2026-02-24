@@ -112,7 +112,12 @@ watch(isSearching, v => {
  <div class="nav-panel h-100 d-flex flex-column overflow-hidden">
   <NavPanelHeader :level="level" @create="emit('create', $event)" @rename="emit('rename', level, $event)" />
   <div class="px-2 py-2 border-bottom flex-shrink-0">
-   <input v-model="searchQuery" type="search" class="form-control form-control-sm" :placeholder="t('nav.search_placeholder')" />
+   <input
+    v-model="searchQuery"
+    type="search"
+    class="form-control form-control-sm"
+    :placeholder="t('nav.search_placeholder')"
+   />
   </div>
   <ul class="list-group list-group-flush overflow-y-auto flex-grow-1">
    <ul ref="notebooksEl" class="list-unstyled m-0">
@@ -132,7 +137,7 @@ watch(isSearching, v => {
       class="drag-handle flex-shrink-0 text-secondary drag-handle-icon"
       :class="{ invisible: isSearching || hoveredId !== item.data.id }"
      />
-     <IconNotebook :size="22" stroke-width="1" class="flex-shrink-0 text-secondary" />
+     <IconNotebook :size="22" stroke-width="1" class="flex-shrink-0" />
      <span class="text-truncate flex-grow-1">{{ item.data.title }}</span>
      <button
       class="btn btn-sm p-0 item-delete-btn flex-shrink-0 text-danger"

@@ -26,6 +26,7 @@ import {
  IconArrowBackUp,
  IconArrowForwardUp,
  IconBold,
+ IconDownload,
  IconExternalLink,
  IconHeading,
  IconH1,
@@ -43,7 +44,7 @@ import {
  IconUnderline
 } from '@tabler/icons-vue'
 import { BrowserOpenURL } from '../../wailsjs/runtime/runtime'
-import { GetNote, SaveImage, UpdateNoteContent, UpdateNoteTitle } from '../../wailsjs/go/main/App'
+import { DownloadImage, GetNote, SaveImage, UpdateNoteContent, UpdateNoteTitle } from '../../wailsjs/go/main/App'
 import type { dto } from '../../wailsjs/go/models'
 
 const props = defineProps<{ noteId: string }>()
@@ -223,10 +224,26 @@ const onDocClickLink = (e: MouseEvent) => {
  linkOpen.value = false
 }
 
+const editorContentEl = ref<HTMLElement | null>(null)
+const onEditorScroll = () => updateImgOverlay(true)
+
+let resizeObserver: MutationObserver | null = null
+
 onMounted(() => {
  document.addEventListener('click', onDocClickColor)
  document.addEventListener('click', onDocClickLink)
  document.addEventListener('click', onDocClickHeading)
+ editorContentEl.value?.addEventListener('scroll', onEditorScroll)
+
+ resizeObserver = new MutationObserver(mutations => {
+  for (const m of mutations) {
+   if ((m.target as HTMLElement).dataset.resizeState === 'true') {
+    updateImgOverlay(true)
+    break
+   }
+  }
+ })
+ resizeObserver.observe(editor.view.dom, { subtree: true, attributeFilter: ['data-resize-state'] })
 })
 
 // Insertar imagen
@@ -247,6 +264,29 @@ const insertImage = () => {
    .run()
  }
  input.click()
+}
+
+
+const downloadCurrentImage = async () => {
+ const src = editor.getAttributes('image').src as string ?? ''
+ const filename = src.split('/').pop() ?? ''
+ if (filename) await DownloadImage(filename)
+}
+
+// Overlay de descarga: posición top-right de la imagen seleccionada
+const imgOverlayStyle = ref<Record<string, string> | null>(null)
+
+const updateImgOverlay = (deselect = false) => {
+ const img = editor.view.dom.querySelector<HTMLElement>('[data-resize-container].ProseMirror-selectednode img')
+ if (!img) { imgOverlayStyle.value = null; return }
+ if (deselect) { editor.commands.blur(); imgOverlayStyle.value = null; return }
+ const r = img.getBoundingClientRect()
+ imgOverlayStyle.value = {
+  position: 'fixed',
+  top: `${r.top + 6}px`,
+  left: `${r.right - 34}px`,
+  zIndex: '100',
+ }
 }
 
 const submitTitle = handleTitleSubmit(async values => {
@@ -291,6 +331,9 @@ const editor = new Editor({
  ],
  onUpdate: () => {
   scheduleSave()
+ },
+ onSelectionUpdate: () => {
+  nextTick(updateImgOverlay)
  }
 })
 
@@ -331,6 +374,8 @@ onBeforeUnmount(() => {
  document.removeEventListener('click', onDocClickColor)
  document.removeEventListener('click', onDocClickLink)
  document.removeEventListener('click', onDocClickHeading)
+ editorContentEl.value?.removeEventListener('scroll', onEditorScroll)
+ resizeObserver?.disconnect()
  if (saveTimer.value) clearTimeout(saveTimer.value)
  editor.destroy()
 })
@@ -602,7 +647,7 @@ onBeforeUnmount(() => {
   </div>
 
   <!-- Contenido -->
-  <div class="editor-content flex-grow-1 overflow-auto px-4 py-2" @click.self="editor.commands.focus()">
+  <div ref="editorContentEl" class="editor-content flex-grow-1 overflow-auto px-4 py-2" @click.self="editor.commands.focus()">
    <div v-if="loading" class="text-secondary small mt-3">{{ t('note.loading') }}</div>
    <EditorContent v-else :editor="editor" />
    <BubbleMenu
@@ -628,6 +673,18 @@ onBeforeUnmount(() => {
      <IconLinkOff :size="16" stroke-width="1.5" />
     </button>
    </BubbleMenu>
+   <Teleport to="body">
+    <button
+     v-if="imgOverlayStyle"
+     type="button"
+     class="img-download-btn btn btn-sm"
+     :style="imgOverlayStyle"
+     :title="t('image.download')"
+     @click="downloadCurrentImage"
+    >
+     <IconDownload :size="14" stroke-width="1.5" />
+    </button>
+   </Teleport>
   </div>
 
   <!-- Footer -->

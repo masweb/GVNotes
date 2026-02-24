@@ -12,6 +12,8 @@ export function DeleteNote(arg1:string):Promise<void>;
 
 export function DeleteNotebook(arg1:string):Promise<void>;
 
+export function DownloadImage(arg1:string):Promise<void>;
+
 export function GetAuthStatus():Promise<any>;
 
 export function GetImage(arg1:string):Promise<dto.ImageItem>;

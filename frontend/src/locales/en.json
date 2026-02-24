@@ -58,6 +58,9 @@
     "edit": "Edit link",
     "remove": "Remove link"
   },
+  "image": {
+    "download": "Download image"
+  },
   "color": {
     "none": "No color"
   },

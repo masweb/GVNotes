@@ -6,12 +6,14 @@ import (
 	"embed"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	db "gvnotes/db/generated"
 	"gvnotes/internal/config"
 	"gvnotes/internal/controllers"
 	"gvnotes/internal/dto"
 	"gvnotes/internal/services"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // appMigrations is set from main.go before NewApp() is called.
@@ -166,4 +168,23 @@ func (a *App) DeleteImage(id string) error {
 
 func (a *App) GetImagePath(filename string) (string, error) {
 	return a.image.GetImagePath(filename)
+}
+
+// DownloadImage opens a native Save dialog and copies the image to the chosen path.
+func (a *App) DownloadImage(filename string) error {
+	destPath, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
+		DefaultFilename: filename,
+		Title:           "Guardar imagen",
+		Filters: []runtime.FileFilter{
+			{DisplayName: "Imágenes", Pattern: "*.png;*.jpg;*.jpeg;*.gif;*.webp"},
+		},
+	})
+	if err != nil || destPath == "" {
+		return err
+	}
+	// Preserve the original extension if the user didn't type one.
+	if filepath.Ext(destPath) == "" {
+		destPath += filepath.Ext(filename)
+	}
+	return a.image.DownloadImage(filename, destPath)
 }

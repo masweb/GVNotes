@@ -22,6 +22,10 @@ export function DeleteNotebook(arg1) {
   return window['go']['main']['App']['DeleteNotebook'](arg1);
 }
 
+export function DownloadImage(arg1) {
+  return window['go']['main']['App']['DownloadImage'](arg1);
+}
+
 export function GetAuthStatus() {
   return window['go']['main']['App']['GetAuthStatus']();
 }

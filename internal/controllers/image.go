@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"context"
+	"io"
+	"os"
 
 	"gvnotes/internal/dto"
 	"gvnotes/internal/services"
@@ -37,4 +39,26 @@ func (c *ImageController) DeleteImage(id string) error {
 // The frontend can use this with Wails runtime to load local files.
 func (c *ImageController) GetImagePath(filename string) (string, error) {
 	return c.svc.FilePath(filename)
+}
+
+// DownloadImage copies the image file to destPath chosen by the user.
+func (c *ImageController) DownloadImage(filename, destPath string) error {
+	srcPath, err := c.svc.FilePath(filename)
+	if err != nil {
+		return err
+	}
+	src, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	dst, err := os.Create(destPath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, src)
+	return err
 }

@@ -1,0 +1,32 @@
+{
+  "context": "Evaluates the useNavActions composable, which tightly couples async Wails backend calls with immediate Pinia store mutations. Key aspects are correct DTO construction from backend responses, matching the right level via parentId stack lookup, and routing delete calls to the correct backend function based on item kind.",
+  "type": "weighted_checklist",
+  "capability_tested": "Navigation CRUD Actions Composable",
+  "checklist": [
+    {
+      "name": "Backend call integration",
+      "description": "createNotebook calls CreateNotebook, createNote calls CreateNote, and deleteItem calls DeleteNotebook or DeleteNote depending on item.kind, all with the correct argument shapes.",
+      "max_score": 25
+    },
+    {
+      "name": "DTO construction",
+      "description": "After creation, a new NotebookListItem (for notebooks) or NoteListItem (for notes) is constructed from the backend response and used as the item inserted into the store.",
+      "max_score": 20
+    },
+    {
+      "name": "Level matching by parentId",
+      "description": "The composable finds the correct NavLevel in the navigation store's stack by comparing level.parentId, then mutates that level's items array to append the new item.",
+      "max_score": 20
+    },
+    {
+      "name": "Post-create navigation",
+      "description": "After createNotebook inserts the item, it calls nav.openNotebook with the new notebook data. After createNote inserts the item, it calls nav.selectNote with the new note's id.",
+      "max_score": 20
+    },
+    {
+      "name": "Delete routing by kind",
+      "description": "deleteItem calls DeleteNotebook when item.kind === 'notebook' and DeleteNote when item.kind === 'note', then calls nav.removeItem with the level's parentId, the item's id, and the item's kind.",
+      "max_score": 15
+    }
+  ]
+}

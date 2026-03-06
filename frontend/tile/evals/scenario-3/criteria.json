@@ -1,0 +1,42 @@
+{
+  "context": "Evaluates the implementation of a Pinia authentication store using the composition API style. The store must manage authentication and password-set state, expose an isAuthenticated computed property, and implement four async actions that integrate with external backend calls while correctly handling loading state, success, and error cases.",
+  "type": "weighted_checklist",
+  "capability_tested": "Authentication Pinia Store",
+  "checklist": [
+    {
+      "name": "defineStore setup",
+      "description": "The store is defined with defineStore using the composition API (setup function) style and given the name 'auth'.",
+      "max_score": 10
+    },
+    {
+      "name": "State refs",
+      "description": "status is typed as 'unauthenticated' | 'authenticated', passwordSet is a boolean ref, loading is a boolean ref, and error is a string | null ref, all initialized to their correct defaults.",
+      "max_score": 20
+    },
+    {
+      "name": "isAuthenticated computed",
+      "description": "isAuthenticated is a computed property that returns true when status.value === 'authenticated', not a direct ref.",
+      "max_score": 15
+    },
+    {
+      "name": "init action",
+      "description": "init() sets loading to true, calls the backend status-check function, sets passwordSet from the response, handles errors by storing a translated error string, and always resets loading to false in a finally block.",
+      "max_score": 15
+    },
+    {
+      "name": "setPassword action",
+      "description": "setPassword() calls the backend set-password function, sets passwordSet and status to 'authenticated' on success (returning true), stores a translated error message on failure (returning false), and manages loading state throughout.",
+      "max_score": 20
+    },
+    {
+      "name": "verifyPassword action",
+      "description": "verifyPassword() calls the backend verify function, sets status to 'authenticated' on success (returning true), stores a translated error on failure (returning false), and manages loading state.",
+      "max_score": 10
+    },
+    {
+      "name": "logout action",
+      "description": "logout() sets status back to 'unauthenticated' and clears error to null.",
+      "max_score": 10
+    }
+  ]
+}

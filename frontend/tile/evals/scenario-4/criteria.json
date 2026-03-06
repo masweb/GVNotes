@@ -1,0 +1,42 @@
+{
+  "context": "Evaluates implementation of a stack-based navigation Pinia store that derives dual-panel state from a stack of NavLevel objects. Key aspects tested are the leftPanel/rightPanel computed logic, the distinction between push navigation (openNotebook) and replace navigation (openNotebookFromLeft), and the collapse-to-root behaviour of selectNoteFromRoot.",
+  "type": "weighted_checklist",
+  "capability_tested": "Stack-Based Hierarchical Navigation Store",
+  "checklist": [
+    {
+      "name": "NavLevel / NavItem types",
+      "description": "NavLevel has a nullable string parentId, a title string, and an items array. NavItem is a discriminated union with kind: 'notebook' | 'note' and a typed data object.",
+      "max_score": 15
+    },
+    {
+      "name": "Core state refs",
+      "description": "stack is a ref<NavLevel[]> initialized to [], selectedNoteId is a ref<string | null> initialized to null, and loading is a boolean ref.",
+      "max_score": 10
+    },
+    {
+      "name": "leftPanel computed",
+      "description": "leftPanel returns stack[length-2] when depth > 1, or stack[0] when depth is 1, or null when the stack is empty.",
+      "max_score": 20
+    },
+    {
+      "name": "rightPanel computed",
+      "description": "rightPanel returns the last stack entry only when depth > 1 (i.e. it is null at root depth).",
+      "max_score": 15
+    },
+    {
+      "name": "openNotebook vs openNotebookFromLeft",
+      "description": "openNotebook pushes a new level onto the stack (appends), while openNotebookFromLeft replaces the last entry ([...stack.slice(0,-1), newLevel]). Both clear selectedNoteId.",
+      "max_score": 20
+    },
+    {
+      "name": "goBack action",
+      "description": "goBack slices the stack to remove the last entry (only when length > 1) and resets selectedNoteId to null.",
+      "max_score": 10
+    },
+    {
+      "name": "selectNoteFromRoot",
+      "description": "selectNoteFromRoot collapses stack to its first element (stack.slice(0,1)) before setting selectedNoteId, ensuring navigation returns to root depth.",
+      "max_score": 10
+    }
+  ]
+}

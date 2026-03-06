@@ -1,0 +1,37 @@
+{
+  "context": "Evaluates the use of the Splitpanes library to build an adaptive two-level split layout. The sidebar must switch between a single NavPanel and a nested two-panel Splitpanes depending on whether rightPanel is non-null, and the correct size constraints and dark-theme class bindings must be applied.",
+  "type": "weighted_checklist",
+  "capability_tested": "Dual-Panel Splitpanes Layout",
+  "checklist": [
+    {
+      "name": "Splitpanes + Pane import",
+      "description": "Splitpanes and Pane are imported from 'splitpanes' and used as the layout components for both the outer and inner splits.",
+      "max_score": 20
+    },
+    {
+      "name": "Sidebar pane constraints",
+      "description": "The sidebar Pane has size=25, min-size=10, and max-size=60 props set correctly.",
+      "max_score": 15
+    },
+    {
+      "name": "Conditional nested splitpanes",
+      "description": "A v-if / v-else (or template v-if) conditional renders a single NavPanel when rightPanel is null/falsy, and a nested Splitpanes with two NavPanel panes when rightPanel is present.",
+      "max_score": 25
+    },
+    {
+      "name": "Inner pane constraints",
+      "description": "Each of the two inner Pane components inside the nested Splitpanes has min-size=20 and max-size=80.",
+      "max_score": 15
+    },
+    {
+      "name": "Dark theme class binding",
+      "description": "A conditional CSS class (e.g. 'split-dark') is bound to the Splitpanes component(s) when currentTheme === 'dark'.",
+      "max_score": 15
+    },
+    {
+      "name": "Main content pane min-size",
+      "description": "The main content Pane (right of the sidebar) has min-size=40 to prevent it from being collapsed too small.",
+      "max_score": 10
+    }
+  ]
+}

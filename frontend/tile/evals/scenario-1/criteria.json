@@ -1,0 +1,32 @@
+{
+  "context": "Evaluates correct setup of Vue I18n using createI18n with globalInjection enabled, proper locale initialization from localStorage with a Spanish default, and implementation of a useLocale composable that wraps useI18n for locale switching and persistence. The i18n instance must be exported as a singleton for app installation.",
+  "type": "weighted_checklist",
+  "capability_tested": "Vue I18n Locale Management",
+  "checklist": [
+    {
+      "name": "createI18n config",
+      "description": "createI18n is called with globalInjection: true, a fallbackLocale of 'en', and message catalogs for both 'en' and 'es' locales loaded from JSON files.",
+      "max_score": 25
+    },
+    {
+      "name": "localStorage locale init",
+      "description": "The initial locale is read from localStorage under the key 'lang'. When no value exists, the locale defaults to 'es' and 'es' is immediately written back to localStorage.",
+      "max_score": 20
+    },
+    {
+      "name": "useLocale composable",
+      "description": "useLocale calls useI18n with useScope: 'global' to access the global locale ref, and returns currentLocale, availableLocales, and setLocale.",
+      "max_score": 20
+    },
+    {
+      "name": "setLocale function",
+      "description": "setLocale updates locale.value to the provided code string and persists the code to localStorage under the key 'lang'.",
+      "max_score": 20
+    },
+    {
+      "name": "availableLocales array",
+      "description": "availableLocales is a static array containing exactly two objects: { code: 'es', label: 'Español' } and { code: 'en', label: 'English' }.",
+      "max_score": 15
+    }
+  ]
+}

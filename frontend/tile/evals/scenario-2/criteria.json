@@ -1,0 +1,32 @@
+{
+  "context": "Evaluates correct registration of three global vee-validate rules using defineRule. Each rule must implement the correct validation logic and return error messages sourced from the Vue I18n global translation function (i18n.global.t), ensuring messages respond to locale changes.",
+  "type": "weighted_checklist",
+  "capability_tested": "Form Validation with vee-validate Custom Rules",
+  "checklist": [
+    {
+      "name": "defineRule usage",
+      "description": "All three rules ('required', 'min', 'confirmed') are registered using vee-validate's defineRule function, making them globally available by name.",
+      "max_score": 30
+    },
+    {
+      "name": "required rule logic",
+      "description": "The required rule trims whitespace from the value before checking emptiness, returning a translated error string for blank/whitespace-only values and true for valid values.",
+      "max_score": 20
+    },
+    {
+      "name": "min rule logic",
+      "description": "The min rule receives the minimum length as the first element of the params array ([min]), compares value.length against it, and returns a translated error with the min value interpolated.",
+      "max_score": 20
+    },
+    {
+      "name": "confirmed rule logic",
+      "description": "The confirmed rule receives the target value as the first element of the params array ([target]), compares value !== target, and returns a translated error string on mismatch.",
+      "max_score": 20
+    },
+    {
+      "name": "i18n integration",
+      "description": "All rule error messages are obtained by calling i18n.global.t with the appropriate translation key rather than hardcoded strings, using the globally exported i18n instance.",
+      "max_score": 10
+    }
+  ]
+}

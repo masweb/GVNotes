@@ -1,0 +1,37 @@
+{
+  "context": "Evaluates the implementation of the useTheme composable, which manages light/dark theming using Vue's reactivity (ref), localStorage for persistence, and the prefers-color-scheme media query for OS preference detection. The theme is applied via a data-coreui-theme attribute on the document root element, and the composable must reactively respond to OS changes only when no explicit user preference is stored.",
+  "type": "weighted_checklist",
+  "capability_tested": "Theme Management Composable",
+  "checklist": [
+    {
+      "name": "Reactive theme ref",
+      "description": "A Vue ref (or reactive equivalent) is used for currentTheme, and the exported currentTheme value reflects changes made via setTheme or toggleTheme.",
+      "max_score": 20
+    },
+    {
+      "name": "localStorage read/write",
+      "description": "The initial theme is read from localStorage using the correct storage key, and every call to setTheme persists the new value back to localStorage under the same key.",
+      "max_score": 20
+    },
+    {
+      "name": "System preference detection",
+      "description": "When no localStorage value exists, the composable reads window.matchMedia('(prefers-color-scheme: dark)').matches to determine the initial theme.",
+      "max_score": 15
+    },
+    {
+      "name": "DOM attribute update",
+      "description": "setTheme applies the theme by calling document.documentElement.setAttribute with the 'data-coreui-theme' attribute and the theme string.",
+      "max_score": 15
+    },
+    {
+      "name": "System change listener",
+      "description": "An event listener is registered on the dark-mode MediaQueryList's 'change' event, and it only applies the system theme when no value is stored in localStorage.",
+      "max_score": 15
+    },
+    {
+      "name": "toggleTheme function",
+      "description": "toggleTheme correctly toggles from 'light' to 'dark' and from 'dark' to 'light' by calling setTheme with the opposite value.",
+      "max_score": 15
+    }
+  ]
+}

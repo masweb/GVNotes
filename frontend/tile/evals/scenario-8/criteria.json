@@ -1,0 +1,32 @@
+{
+  "context": "Evaluates the moveItem action in the navigation store, a pure in-memory operation that removes an item from a source level, conditionally inserts it at the destination, and collapses the navigation stack if the moved item is a notebook that is currently open. All three steps must correctly operate on the reactive stack without backend calls.",
+  "type": "weighted_checklist",
+  "capability_tested": "Move Item in Navigation Store",
+  "checklist": [
+    {
+      "name": "Source removal",
+      "description": "The source NavLevel (found by stack.find matching its parentId) has its items array replaced with a filtered array that excludes the moved item by id.",
+      "max_score": 20
+    },
+    {
+      "name": "Destination insertion",
+      "description": "The destination NavLevel (found by matching its parentId to destinationParentId) is located in the stack, and the item is appended to its items array when found.",
+      "max_score": 20
+    },
+    {
+      "name": "Notebook stack collapse",
+      "description": "When item.kind === 'notebook', the store searches for a NavLevel whose parentId equals the item's id. If found at index openIdx, the stack is replaced with stack.slice(0, openIdx).",
+      "max_score": 30
+    },
+    {
+      "name": "Kind-conditional collapse",
+      "description": "The stack-collapse logic is guarded by item.kind === 'notebook' so that moving a note never triggers any stack modification.",
+      "max_score": 15
+    },
+    {
+      "name": "In-memory only",
+      "description": "moveItem contains no async/await and makes no backend API calls; it operates entirely through reactive stack mutations.",
+      "max_score": 15
+    }
+  ]
+}

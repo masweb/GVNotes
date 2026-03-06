@@ -1,0 +1,32 @@
+{
+  "context": "Evaluates use of the vue-draggable-plus VueDraggable component for sortable lists, and the matching store reorderItems action. The action must maintain kind-based separation of notebooks and notes, persist new positions using a gap-based index × 1000 formula, and update reactive state immediately before awaiting backend calls.",
+  "type": "weighted_checklist",
+  "capability_tested": "Drag-and-Drop Item Reordering with Position Persistence",
+  "checklist": [
+    {
+      "name": "VueDraggable component",
+      "description": "The template uses VueDraggable (from vue-draggable-plus) with a v-model binding to the items list and a handler that calls reorderItems with the level, kind, and new sorted array.",
+      "max_score": 25
+    },
+    {
+      "name": "Kind separation logic",
+      "description": "reorderItems filters items of the other kind from the target level, then rebuilds items as [...notebooks, ...notes] to always maintain notebook-before-note ordering.",
+      "max_score": 20
+    },
+    {
+      "name": "Gap-based position formula",
+      "description": "Each item's new position is set to idx * 1000 (where idx is the 0-based index in the reordered array), both when calling the backend and when updating item.data.position.",
+      "max_score": 20
+    },
+    {
+      "name": "Backend persistence calls",
+      "description": "UpdateNotebookPosition or UpdateNotePosition is called for every item in newItems using Promise.all, passing the item id and a position object.",
+      "max_score": 20
+    },
+    {
+      "name": "Reactive state first",
+      "description": "The reactive items array on the target level is updated synchronously before the await Promise.all call, ensuring the UI reflects the new order immediately.",
+      "max_score": 15
+    }
+  ]
+}

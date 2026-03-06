@@ -1,0 +1,7 @@
+{
+  "name": "gville/frontend",
+  "version": "0.0.0",
+  "docs": "docs/index.md",
+  "summary": "Vue 3 + TypeScript frontend for GVNotes, a fast, private, offline-first desktop note-taking application built with Wails v2 (Go + native WebView). Communicates with the Go backend exclusively through Wails-generated bindings. Features hierarchical notebook/note management with drag-and-drop, a TipTap rich text editor (bold, italic, headings, tables, code blocks, images), Pinia state management, CoreUI Vue components, Vue I18n (English and Spanish), optional app password authentication (Argon2id), and light/dark theme switching.",
+  "private": true
+}

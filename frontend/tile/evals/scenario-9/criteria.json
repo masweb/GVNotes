@@ -1,0 +1,47 @@
+{
+  "context": "Evaluates the initialization of a TipTap editor with a comprehensive extension set. Correct usage of useEditor, EditorContent, and the individual TipTap extension constructors is assessed, with particular weight on CodeBlockLowlight configuration (which requires creating a lowlight instance and registering languages) and TaskList/Table extension groupings.",
+  "type": "weighted_checklist",
+  "capability_tested": "TipTap Editor Extension Setup",
+  "checklist": [
+    {
+      "name": "useEditor + EditorContent",
+      "description": "The editor is initialized with useEditor() and the resulting instance is bound to an EditorContent component via the :editor prop in the template.",
+      "max_score": 15
+    },
+    {
+      "name": "StarterKit + text formatting",
+      "description": "StarterKit, Underline, Highlight, TextStyle, and Color are all included in the extensions array with correct imports.",
+      "max_score": 15
+    },
+    {
+      "name": "TextAlign node types",
+      "description": "TextAlign.configure() is called with a types array that includes at least 'paragraph' and 'heading'.",
+      "max_score": 10
+    },
+    {
+      "name": "Link extension config",
+      "description": "Link.configure() is called with autolink: true (or equivalent) and a protocols array that includes 'http', 'https', and 'mailto'.",
+      "max_score": 10
+    },
+    {
+      "name": "TaskList + TaskItem",
+      "description": "Both TaskList and TaskItem extensions are included. TaskItem.configure() is called with nested: true to allow nested task lists.",
+      "max_score": 15
+    },
+    {
+      "name": "Table extensions",
+      "description": "Table, TableRow, TableHeader, and TableCell are all included as separate extensions in the extensions array.",
+      "max_score": 10
+    },
+    {
+      "name": "CodeBlockLowlight setup",
+      "description": "CodeBlockLowlight.configure() receives a lowlight instance created with createLowlight() (or equivalent) that has at least three programming languages registered via lowlight.register().",
+      "max_score": 20
+    },
+    {
+      "name": "Placeholder extension",
+      "description": "Placeholder.configure() is called with a non-empty placeholder string.",
+      "max_score": 5
+    }
+  ]
+}

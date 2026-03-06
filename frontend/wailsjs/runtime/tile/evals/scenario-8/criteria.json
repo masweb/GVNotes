@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model correctly uses OnFileDrop to register a file drop handler with the appropriate useDropTarget flag and OnFileDropOff to remove all listeners. The key challenge is knowing both function names, the correct callback signature (x, y, paths), and the meaning of the second boolean parameter.",
+  "type": "weighted_checklist",
+  "capability_tested": "File Drag and Drop Handling",
+  "checklist": [
+    {
+      "name": "OnFileDrop used",
+      "description": "OnFileDrop from @wailsapp/runtime is called inside enableDrop",
+      "max_score": 30
+    },
+    {
+      "name": "Handler argument passed",
+      "description": "The handler (DropHandler callback) is passed as the first argument to OnFileDrop",
+      "max_score": 25
+    },
+    {
+      "name": "dropTargetOnly flag passed",
+      "description": "The dropTargetOnly boolean parameter is passed as the second argument (useDropTarget) to OnFileDrop",
+      "max_score": 30
+    },
+    {
+      "name": "OnFileDropOff used",
+      "description": "OnFileDropOff from @wailsapp/runtime is called (with no arguments) inside disableDrop",
+      "max_score": 15
+    }
+  ]
+}

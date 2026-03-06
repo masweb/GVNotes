@@ -1,0 +1,8 @@
+{
+  "name": "gville/wailsapp-runtime",
+  "version": "2.0.0",
+  "docs": "docs/index.md",
+  "describes": "pkg:npm/%40wailsapp/runtime@2.0.0",
+  "summary": "Wails v2 JavaScript/TypeScript runtime bridge library for desktop applications, providing event bus, window management, logging, clipboard, screen information, browser integration, application lifecycle, and drag-and-drop file handling via the native Wails WebView runtime.",
+  "private": true
+}

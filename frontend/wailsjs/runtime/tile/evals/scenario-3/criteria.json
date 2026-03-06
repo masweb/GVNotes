@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model uses EventsOnce (or EventsOnMultiple with maxCallbacks=1) to register a listener that fires exactly once and is then automatically removed. The key challenge is knowing that EventsOnce exists and that it returns a cancel function for early removal.",
+  "type": "weighted_checklist",
+  "capability_tested": "One-Time Event Handling",
+  "checklist": [
+    {
+      "name": "EventsOnce or EventsOnMultiple(1)",
+      "description": "EventsOnce from @wailsapp/runtime is called (or EventsOnMultiple with maxCallbacks set to 1) to register the one-time listener",
+      "max_score": 40
+    },
+    {
+      "name": "Cancel function returned",
+      "description": "once returns the cancel function provided by EventsOnce (or EventsOnMultiple), enabling the caller to remove the listener before it fires",
+      "max_score": 30
+    },
+    {
+      "name": "Correct arguments",
+      "description": "eventName and handler are passed in the correct order to EventsOnce (or EventsOnMultiple)",
+      "max_score": 20
+    },
+    {
+      "name": "Single invocation guaranteed",
+      "description": "The implementation ensures the handler fires at most once without requiring manual cleanup by the caller",
+      "max_score": 10
+    }
+  ]
+}

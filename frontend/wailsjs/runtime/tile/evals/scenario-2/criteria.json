@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model correctly uses EventsEmit to emit named events with optional variadic data arguments. The key challenge is knowing that EventsEmit must receive the event name as its first argument and that all subsequent arguments are data payloads passed through to listeners.",
+  "type": "weighted_checklist",
+  "capability_tested": "Event Emission with Data",
+  "checklist": [
+    {
+      "name": "EventsEmit used",
+      "description": "EventsEmit from @wailsapp/runtime is called when broadcast is invoked",
+      "max_score": 35
+    },
+    {
+      "name": "Event name as first arg",
+      "description": "The eventName string is passed as the first argument to EventsEmit",
+      "max_score": 25
+    },
+    {
+      "name": "Data args forwarded",
+      "description": "All variadic data arguments supplied to broadcast are forwarded to EventsEmit after the event name (zero or more)",
+      "max_score": 30
+    },
+    {
+      "name": "No extra arguments",
+      "description": "No extra or hardcoded arguments are injected between eventName and the caller-supplied data",
+      "max_score": 10
+    }
+  ]
+}

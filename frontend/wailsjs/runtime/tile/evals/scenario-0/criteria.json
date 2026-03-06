@@ -1,0 +1,47 @@
+{
+  "context": "Evaluates whether the model correctly uses all seven @wailsapp/runtime logging functions (LogPrint, LogTrace, LogDebug, LogInfo, LogWarning, LogError, LogFatal) to implement severity-level dispatch. The key challenge is knowing which specific runtime function corresponds to each level string and forwarding the message argument correctly.",
+  "type": "weighted_checklist",
+  "capability_tested": "Logging",
+  "checklist": [
+    {
+      "name": "LogDebug usage",
+      "description": "LogDebug is imported from @wailsapp/runtime and called with the message when level is 'debug'",
+      "max_score": 15
+    },
+    {
+      "name": "LogError usage",
+      "description": "LogError is imported from @wailsapp/runtime and called with the message when level is 'error'",
+      "max_score": 15
+    },
+    {
+      "name": "LogFatal usage",
+      "description": "LogFatal is imported from @wailsapp/runtime and called with the message when level is 'fatal'",
+      "max_score": 15
+    },
+    {
+      "name": "LogWarning usage",
+      "description": "LogWarning is imported from @wailsapp/runtime and called with the message when level is 'warning'",
+      "max_score": 15
+    },
+    {
+      "name": "LogInfo usage",
+      "description": "LogInfo is imported from @wailsapp/runtime and called with the message when level is 'info'",
+      "max_score": 10
+    },
+    {
+      "name": "LogTrace usage",
+      "description": "LogTrace is imported from @wailsapp/runtime and called with the message when level is 'trace'",
+      "max_score": 10
+    },
+    {
+      "name": "LogPrint usage",
+      "description": "LogPrint is imported from @wailsapp/runtime and called with the message when level is 'print'",
+      "max_score": 10
+    },
+    {
+      "name": "Message forwarding",
+      "description": "The original message string is passed unchanged as the argument to whichever runtime logging function is selected",
+      "max_score": 10
+    }
+  ]
+}

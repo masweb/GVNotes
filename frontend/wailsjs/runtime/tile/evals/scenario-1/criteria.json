@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model uses EventsOn to register persistent event listeners and EventsOff to remove them, including support for removing multiple event names in a single call. The key challenge is knowing that EventsOn returns a cancel function and that EventsOff accepts variadic event name arguments.",
+  "type": "weighted_checklist",
+  "capability_tested": "Persistent Event Listening",
+  "checklist": [
+    {
+      "name": "EventsOn for subscribe",
+      "description": "EventsOn from @wailsapp/runtime is called with the eventName and handler when subscribe is invoked",
+      "max_score": 30
+    },
+    {
+      "name": "Cancel function returned",
+      "description": "subscribe returns the cancel function that EventsOn itself returns, enabling the caller to remove the specific listener",
+      "max_score": 25
+    },
+    {
+      "name": "EventsOff for unsubscribe",
+      "description": "EventsOff from @wailsapp/runtime is called when unsubscribe is invoked",
+      "max_score": 25
+    },
+    {
+      "name": "Variadic EventsOff args",
+      "description": "All event name arguments (the primary name and any additional names) are spread and forwarded to EventsOff in a single call",
+      "max_score": 20
+    }
+  ]
+}

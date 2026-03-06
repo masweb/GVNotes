@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model uses WindowGetSize to retrieve window dimensions and WindowSetSize to apply them. The key challenge is knowing the exact Size interface shape (w and h fields) returned by WindowGetSize and the correct argument order for WindowSetSize.",
+  "type": "weighted_checklist",
+  "capability_tested": "Window Size Control",
+  "checklist": [
+    {
+      "name": "WindowGetSize used",
+      "description": "WindowGetSize from @wailsapp/runtime is called inside getDimensions",
+      "max_score": 30
+    },
+    {
+      "name": "Promise returned from get",
+      "description": "getDimensions returns the Promise that WindowGetSize returns, without unwrapping or re-wrapping it",
+      "max_score": 25
+    },
+    {
+      "name": "WindowSetSize used",
+      "description": "WindowSetSize from @wailsapp/runtime is called inside setDimensions",
+      "max_score": 30
+    },
+    {
+      "name": "Correct arg order for set",
+      "description": "WindowSetSize is called with width as the first argument and height as the second argument",
+      "max_score": 15
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model correctly uses WindowFullscreen to enter fullscreen, WindowUnfullscreen to exit it, and WindowIsFullscreen to query the current state. The key challenge is knowing that the enter and exit operations are separate named functions and that the query function returns a Promise<boolean>.",
+  "type": "weighted_checklist",
+  "capability_tested": "Window Fullscreen Management",
+  "checklist": [
+    {
+      "name": "WindowFullscreen used",
+      "description": "WindowFullscreen from @wailsapp/runtime is called inside enterFullscreen",
+      "max_score": 25
+    },
+    {
+      "name": "WindowUnfullscreen used",
+      "description": "WindowUnfullscreen from @wailsapp/runtime is called inside exitFullscreen",
+      "max_score": 25
+    },
+    {
+      "name": "WindowIsFullscreen used",
+      "description": "WindowIsFullscreen from @wailsapp/runtime is called inside isFullscreen",
+      "max_score": 30
+    },
+    {
+      "name": "Promise returned from query",
+      "description": "isFullscreen returns the Promise<boolean> that WindowIsFullscreen returns without re-wrapping",
+      "max_score": 20
+    }
+  ]
+}

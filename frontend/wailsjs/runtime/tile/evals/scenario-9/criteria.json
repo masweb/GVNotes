@@ -1,0 +1,22 @@
+{
+  "context": "Evaluates whether the model correctly uses the Environment function from @wailsapp/runtime to retrieve build type, platform, and CPU architecture. The key challenge is knowing the exact function name and that it returns a Promise<EnvironmentInfo> with buildType, platform, and arch string fields.",
+  "type": "weighted_checklist",
+  "capability_tested": "Environment Information",
+  "checklist": [
+    {
+      "name": "Environment used",
+      "description": "Environment from @wailsapp/runtime is called (with no arguments) inside getEnvironment",
+      "max_score": 40
+    },
+    {
+      "name": "Promise forwarded",
+      "description": "getEnvironment returns the Promise<EnvironmentInfo> from Environment without re-wrapping or modifying the resolved value",
+      "max_score": 35
+    },
+    {
+      "name": "EnvironmentInfo shape",
+      "description": "The implementation or its TypeScript types correctly reflect that the resolved object has buildType, platform, and arch string properties",
+      "max_score": 25
+    }
+  ]
+}

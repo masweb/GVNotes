@@ -1,0 +1,27 @@
+{
+  "context": "Evaluates whether the model correctly uses ClipboardGetText to read clipboard content and ClipboardSetText to write it. The key challenge is knowing both function names, that ClipboardGetText takes no arguments, and that ClipboardSetText accepts the text string and returns a Promise<boolean>.",
+  "type": "weighted_checklist",
+  "capability_tested": "Clipboard Access",
+  "checklist": [
+    {
+      "name": "ClipboardGetText used",
+      "description": "ClipboardGetText from @wailsapp/runtime is called (with no arguments) inside readText",
+      "max_score": 30
+    },
+    {
+      "name": "readText Promise forwarded",
+      "description": "readText returns the Promise<string> from ClipboardGetText without re-wrapping",
+      "max_score": 20
+    },
+    {
+      "name": "ClipboardSetText used",
+      "description": "ClipboardSetText from @wailsapp/runtime is called inside writeText with the text argument",
+      "max_score": 30
+    },
+    {
+      "name": "writeText Promise forwarded",
+      "description": "writeText returns the Promise<boolean> from ClipboardSetText without re-wrapping",
+      "max_score": 20
+    }
+  ]
+}
